@@ -1,0 +1,3 @@
+[Container]
+# map exposed backend ports into caddy container
+PodmanArgs=--network=pasta:{{ caddy_pasta_port_map | sort | join(',') }}

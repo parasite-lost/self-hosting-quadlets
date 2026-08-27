@@ -33,14 +33,14 @@
   become_user: "{{ common_user_name }}"
   block:
     - name: Create systemd user folder for {{ common_user_name }}
-      when: common_systemd
+      when: common_with_systemd_units
       ansible.builtin.file:
         path: "{{ common_user_home }}/.config/systemd/user"
         state: directory
         mode: u=rwx,g=rx,o=
 
     - name: Create quadlet folder for {{ common_user_name }}
-      when: common_quadlets
+      when: common_with_quadlets
       ansible.builtin.file:
         path: "{{ common_user_home }}/.config/containers/systemd"
         state: directory

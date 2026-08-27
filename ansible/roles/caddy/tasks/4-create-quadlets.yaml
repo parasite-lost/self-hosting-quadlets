@@ -71,7 +71,7 @@
                   {{ caddy_credential_acme_api_token.stdout }}
                 mode: u=rw,g=r,o=
               notify:
-                - Restart caddy
+                - Schedule caddy restart
 
     - name: Add container unit
       ansible.builtin.template:
@@ -80,4 +80,4 @@
         mode: u=rw,g=r,o=
       notify:
         - Enable caddy
-        - Restart caddy
+        - Schedule caddy restart

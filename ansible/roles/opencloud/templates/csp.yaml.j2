@@ -1,20 +1,26 @@
 directives:
-  child-src:
+  base-uri:
     - "'self'"
+  default-src:
+    - "'none'"
   connect-src:
     - "'self'"
     - 'blob:'
     - 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
     - 'https://raw.githubusercontent.com/opencloud-eu/awesome-apps/'
     - 'https://update.opencloud.eu/'
-  default-src:
-    - "'none'"
   font-src:
     - "'self'"
+    - 'data:'
+    - 'https://embed.diagrams.net/'
+  form-action:
+    - "'self'"
+    - 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
   frame-ancestors:
     - "'self'"
   frame-src:
     - "'self'"
+    - 'blob:'
     - 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
     - 'https://embed.diagrams.net/'
     - 'https://docs.opencloud.eu'
@@ -23,18 +29,20 @@ directives:
     - 'data:'
     - 'blob:'
     - 'https://raw.githubusercontent.com/opencloud-eu/awesome-apps/'
-    - 'https://tile.openstreetmap.org/'
   manifest-src:
     - "'self'"
   media-src:
     - "'self'"
-  object-src:
-    - "'self'"
     - 'blob:'
+  object-src:
+    - "'none'"
   script-src:
     - "'self'"
     - "'unsafe-inline'"
-    - 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
+    - "'unsafe-eval'"
   style-src:
     - "'self'"
     - "'unsafe-inline'"
+  worker-src:
+    - "'self'"
+    - 'blob:'

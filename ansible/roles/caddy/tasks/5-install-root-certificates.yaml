@@ -12,7 +12,6 @@
 - name: Validate root certificates are present
   ansible.builtin.assert:
     that:
-      - item is defined
       - item is file
     fail_msg: "Required root certificate not present for {{ inventory_hostname }}"
     quiet: true

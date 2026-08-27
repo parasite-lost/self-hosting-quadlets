@@ -1,0 +1,47 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - caddy_container_image is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Create caddy json config
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Create caddy config directory
+      ansible.builtin.file:
+        path: "{{ caddy_dir_config }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Convert Caddyfile to json
+      ansible.builtin.command:
+        cmd: >-
+          podman run --rm -it
+            -v {{ caddy_dir_caddyfile_config }}:/config:ro,Z
+            {{ caddy_container_image }}
+            caddy adapt --config /config/Caddyfile
+      register: caddy_finalization_adapted_json_config
+      changed_when: false
+
+    - name: Inject remote_ip into for mTLS policies
+      delegate_to: localhost
+      become: false
+      ansible.builtin.command:
+        cmd: python "{{ role_path }}/scripts/add-remote-ip-matcher.py"
+        stdin: "{{ caddy_finalization_adapted_json_config.stdout }}"
+      register: caddy_finalization_final_json_config
+      changed_when: false
+
+    - name: Deploy caddy json config
+      when: caddy_finalization_final_json_config is not skipped
+      ansible.builtin.copy:
+        content: "{{ caddy_finalization_final_json_config.stdout }}"
+        dest: "{{ caddy_dir_config }}/caddy.json"
+        mode: u+rw,g=r,o=
+      notify:
+        - Reload caddy

@@ -8,14 +8,12 @@
         src: authelia.caddy.j2
         dest: "{{ caddy_dir_caddyfile_subdomain_d }}/authelia.caddy"
         mode: u=rw,g=r,o=
-      notify: Reload caddy
 
     - name: Add caddy snippet dropin for (authelia_guard)
       ansible.builtin.template:
         src: authelia-guard.caddy.j2
         dest: "{{ caddy_dir_snippet_d }}/authelia-guard.caddy"
         mode: u=rw,g=r,o=
-      notify: Reload caddy
 
     - name: Add caddy pasta port mapping # noqa: var-naming
       ansible.builtin.set_fact:

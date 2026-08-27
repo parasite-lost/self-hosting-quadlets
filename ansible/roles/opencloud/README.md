@@ -1,18 +1,33 @@
-# Opencloud
+# OpenCloud
+
+OpenCloud is a cloud storage solution. Accounts are automatically provisioned
+via Authelia.
+
+## Configuration
+
+### OpenCloud
 
 * https://docs.opencloud.eu/docs/admin/
 * https://docs.opencloud.eu/docs/admin/configuration/authentication-and-user-management/external-idp
 * https://www.authelia.com/integration/openid-connect/clients/opencloud/
 
-TODO: get it to work (with mTLS):
+OpenCloud does not require a shared secret with Authelia as it is configured as
+a public client and will automatically generate all its internal secrets on
+first startup.
 
-opencloud seems to be connecting to itself, so guarding behind authelia or mTLS
-certificate does not work as opencloud cannot be easily configured to work with
-authelia/mTLS. Optional mTLS certificate does not work as desktop browsers
-rarely use certificates when they are optional (opencloud becomes unusable).
-What is needed is the following: mTLS is enforced unless the connection is local -
-unfortunately this is not supported by Caddyfiles but only by json caddy
-configuration. Options:
+The only thing needed to configure is the mTLS certificate:
 
-1. render json config using ansible and jinja2 templates
-2. or keep Caddyfile, adapt to json, inject remote_ip matcher into tls policy of json, deploy json
+* `opencloud_root_ca`: path to mTLS root CA certificate to guard OpenCloud
+
+## mTLS
+
+OpenCloud seems to be connecting to itself, so guarding behind Authelia does not
+work without some exception policy in Authelia. OpenCloud itself can also not be
+configured to use an mTLS certificate. Using an optional mTLS certificate breaks
+OpenCloud desktop browsers as they rarely use certificates when they are
+optional (OpenCloud becomes completely unusable).
+
+What is needed is mTLS enforcement based on IP address: external IPs connecting
+must use a mTLS certificate, local connection (OpenCloud to itself) do require
+an mTLS certificate. This is solved by injecting a remote_ip matcher into the
+json caddy configuration.

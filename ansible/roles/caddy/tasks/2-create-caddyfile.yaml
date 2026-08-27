@@ -9,6 +9,12 @@
         state: directory
         mode: u=rwx,g=rx,o=
 
+    - name: Create Caddyfile staging directory
+      ansible.builtin.file:
+        path: "{{ caddy_dir_caddyfile_config }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
     - name: Create caddy snippet dropin directory
       ansible.builtin.file:
         path: "{{ caddy_dir_snippet_d }}"
@@ -38,18 +44,15 @@
         src: "mtls-guard.caddy.j2"
         dest: "{{ caddy_dir_snippet_d }}/mtls-guard.caddy"
         mode: u=rw,g=r,o=
-      notify: Reload caddy
 
     - name: Create caddy dns configuration directory
       ansible.builtin.template:
         src: "caddy-dns-config-{{ caddy_dns_provider }}.caddy.j2"
         dest: "{{ caddy_dns_configuration_file }}"
         mode: u=rw,g=r,o=
-      notify: Reload caddy
 
     - name: Create Caddyfile
       ansible.builtin.template:
         src: Caddyfile.j2
-        dest: "{{ caddy_caddyfile }}"
+        dest: "{{ caddy_dir_caddyfile_config }}/Caddyfile"
         mode: u=rw,g=r,o=
-      notify: Reload caddy
