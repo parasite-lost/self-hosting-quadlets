@@ -9,4 +9,4 @@
         dest: "{{ caddy_container_d }}/static-website.conf"
         mode: u=rw,g=r,o=
       notify:
-        - Restart caddy
+        - Schedule caddy restart

@@ -17,4 +17,4 @@
   vars:
     common_user_name: "{{ ddns_user_name }}"
     common_user_home: "{{ ddns_user_home }}"
-    common_quadlets: false
+    common_with_quadlets: false

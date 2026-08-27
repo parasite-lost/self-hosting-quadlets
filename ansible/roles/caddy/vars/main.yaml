@@ -1,15 +1,19 @@
 ---
+caddy_dir_caddyfile_config: "{{ caddy_user_home }}/caddyfile_config"
+caddy_dns_configuration_file: "{{ caddy_dir_caddyfile_config }}/caddy-dns-config.caddy"
+caddy_dir_snippet_d: "{{ caddy_dir_caddyfile_config }}/snippets.d"
+caddy_dir_caddyfile_subdomain_d: "{{ caddy_dir_caddyfile_config }}/caddyfile.subdomain.d"
+
 caddy_dir_config: "{{ caddy_user_home }}/config"
-caddy_caddyfile: "{{ caddy_dir_config }}/Caddyfile"
-caddy_dns_configuration_file: "{{ caddy_dir_config }}/caddy-dns-config.caddy"
-caddy_dir_snippet_d: "{{ caddy_dir_config }}/snippets.d"
-caddy_dir_caddyfile_subdomain_d: "{{ caddy_dir_config }}/caddyfile.subdomain.d"
 caddy_dir_certs: "{{ caddy_dir_config }}/certs"
 
 _caddy_supported_dns_provider:
   - "localhost"
   - "cloudflare"
 
+# caddy restart can only happen after all roles have been executed since the
+# config depends on all roles. See "Schedule caddy restart" handler
+_caddy_restart_needed: false
 caddy_pasta_port_map: []
 
 caddy_service_unit: "caddy.service"

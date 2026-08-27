@@ -20,7 +20,7 @@
         src: opencloud.caddy.j2
         dest: "{{ caddy_dir_caddyfile_subdomain_d }}/opencloud.caddy"
         mode: u=rw,g=r,o=
-      notify: Restart caddy
+      notify: Schedule caddy restart
 
     - name: Add caddy pasta port mapping # noqa: var-naming
       ansible.builtin.set_fact:

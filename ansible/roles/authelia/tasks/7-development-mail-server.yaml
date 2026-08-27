@@ -5,8 +5,8 @@
     - name: Create mailpit container
       become: true
       become_user: "{{ authelia_user_name }}"
-      ansible.builtin.template:
-        src: development-mailpit.container.j2
+      ansible.builtin.copy:
+        src: development-mailpit.container
         dest: "{{ authelia_user_home }}/.config/containers/systemd/mailpit.container"
         mode: u+rw,g=r,o=
       notify:

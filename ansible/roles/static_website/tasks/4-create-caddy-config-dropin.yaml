@@ -6,4 +6,3 @@
     src: "static.caddy.j2"
     dest: "{{ caddy_dir_caddyfile_wildcard_d }}/static.caddy"
     mode: u=rw,g=r,o=
-  notify: Reload caddy

@@ -1,12 +1,12 @@
 [Unit]
 Description=caddy reverse proxy
 AssertPathIsDirectory={{ caddy_dir_config }}
-AssertPathExists={{ caddy_caddyfile }}
+AssertPathExists={{ caddy_dir_config }}/caddy.json
 Requires=caddy.socket
 After=caddy.socket
 
 [Service]
-ExecReload=podman exec caddy /usr/bin/caddy reload --config /etc/caddy/Caddyfile
+ExecReload=podman exec caddy /usr/bin/caddy reload --config /etc/caddy/caddy.json
 
 [Container]
 ContainerName=caddy
@@ -23,7 +23,7 @@ ReadOnly=true
 #HealthRetries=3
 #HealthStartPeriod=10s
 
-Exec=/usr/bin/caddy run --config /etc/caddy/Caddyfile
+Exec=/usr/bin/caddy run --config /etc/caddy/caddy.json
 
 NoNewPrivileges=true
 

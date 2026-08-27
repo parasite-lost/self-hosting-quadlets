@@ -17,4 +17,4 @@
   vars:
     common_user_name: "{{ opencloud_user_name }}"
     common_user_home: "{{ opencloud_user_home }}"
-    common_systemd: false
+    common_with_systemd_units: false

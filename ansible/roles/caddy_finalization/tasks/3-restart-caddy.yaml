@@ -1,0 +1,8 @@
+---
+- name: Restart caddy (if needed)
+  when: _caddy_restart_needed
+  ansible.builtin.debug:
+    msg: Scheduling caddy restart
+  changed_when: true
+  notify:
+    - Restart caddy

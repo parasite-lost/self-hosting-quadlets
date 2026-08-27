@@ -17,4 +17,4 @@
   vars:
     common_user_name: "{{ immich_user_name }}"
     common_user_home: "{{ immich_user_home }}"
-    common_systemd: false
+    common_with_systemd_units: false

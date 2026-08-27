@@ -1,5 +1,5 @@
 ---
 # add quadlet directory
-common_quadlets: true
+common_with_quadlets: true
 # add systemd user directory
-common_systemd: true
+common_with_systemd_units: true
