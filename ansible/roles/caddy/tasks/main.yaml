@@ -1,0 +1,20 @@
+---
+- name: Setup caddy reverse proxy
+  block:
+    - name: Check variables
+      ansible.builtin.import_tasks: 0-validate-caddy-variables.yaml
+
+    - name: Create caddy user
+      ansible.builtin.import_tasks: 1-create-caddy-user.yaml
+
+    - name: Create Caddyfile
+      ansible.builtin.import_tasks: 2-create-caddyfile.yaml
+
+    - name: Open http, https, http3 ports for caddy
+      ansible.builtin.import_tasks: 3-add-caddy-firewall-rules.yaml
+
+    - name: Create quadlets
+      ansible.builtin.import_tasks: 4-create-quadlets.yaml
+
+    - name: Install root certificates
+      ansible.builtin.import_tasks: 5-install-root-certificates.yaml

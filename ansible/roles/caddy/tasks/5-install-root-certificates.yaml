@@ -1,0 +1,38 @@
+---
+- name: Validate root certificates are defined
+  ansible.builtin.assert:
+    that:
+      - caddy_root_certificates is defined
+      - caddy_root_certificates | type_debug == 'list'
+    fail_msg: "Required root certificates are not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Validate root certificates are present
+  ansible.builtin.assert:
+    that:
+      - item is defined
+      - item is file
+    fail_msg: "Required root certificate not present for {{ inventory_hostname }}"
+    quiet: true
+  loop: "{{ caddy_root_certificates }}"
+  tags:
+    - validate
+
+- name: Install root certificates
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Create mTLS cert directory
+      ansible.builtin.file:
+        path: "{{ caddy_dir_certs }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Install root certificates
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ caddy_dir_certs }}/{{ item | basename }}"
+        mode: u=rw,g=r,o=
+      loop: "{{ caddy_root_certificates }}"

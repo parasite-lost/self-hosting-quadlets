@@ -1,0 +1,29 @@
+{% from 'macros/caddy-config-common-macros.j2' import
+   route_match_host,
+   encode,
+   set_global_headers,
+   reverse_proxy,
+   forward_auth
+%}
+
+{% macro route_forward_auth(service, maindomain, auth_service_port) %}
+{
+  {{ route_match_host(service.subdomain, maindomain) }},
+  "handle": [
+    {
+      "handler": "subroute",
+      "routes": [
+        {
+          "handle": [
+            {{ set_global_headers() }},
+            {{ forward_auth(auth_service_port) }},
+            {{ encode() }},
+            {{ reverse_proxy(service.port) }}
+          ]
+        }
+      ]
+    }
+  ],
+  "terminal": true
+}
+{% endmacro %}

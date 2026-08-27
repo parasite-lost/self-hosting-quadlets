@@ -1,0 +1,15 @@
+---
+- name: Basic setup
+  become: true
+  block:
+    - name: Install required software
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ basic_required_packages }}"
+
+    - name: Install admin software
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ basic_admin_packages }}"

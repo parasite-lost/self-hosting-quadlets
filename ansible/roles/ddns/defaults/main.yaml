@@ -1,0 +1,3 @@
+---
+ddns_user_name: "ddns"
+ddns_user_home: "/home/{{ ddns_user_name }}"

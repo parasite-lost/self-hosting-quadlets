@@ -1,0 +1,56 @@
+[Unit]
+Description=Opencloud server container
+
+[Service]
+Restart=always
+
+[Container]
+Pod=opencloud.pod
+Label=app=opencloud
+ContainerName=opencloud-server
+
+Image=docker.io/opencloudeu/opencloud-rolling:{{ opencloud_version }}
+
+User=0
+
+Entrypoint=/bin/bash
+Exec=-c "if [ ! -f /etc/opencloud/opencloud.yaml ]; then opencloud init; fi; exec opencloud server"
+
+# OpenCloud native environment variables
+Environment=OC_URL=https://{{ opencloud_subdomain }}.{{ host_maindomain }}
+# self generated certificates: true, otherwise false:
+Environment=OC_INSECURE={{ 'true' if deploy_purpose == 'development' else 'false' }}
+# connection to reverse proxy without TLS
+Environment=PROXY_TLS=false
+
+# do not run authentication service -> integrate authelia instead
+Environment=OC_EXCLUDE_RUN_SERVICES=idp
+
+# External Authelia OIDC Links
+Environment=OC_OIDC_ISSUER=https://{{ authelia_subdomain }}.{{ host_maindomain }}
+Environment=PROXY_OIDC_REWRITE_WELLKNOWN=true
+Environment=PROXY_OIDC_ACCESS_TOKEN_VERIFY_METHOD=jwt
+Environment=WEBFINGER_WEB_OIDC_CLIENT_ID=opencloud-web-id
+Environment=WEBFINGER_WEB_OIDC_CLIENT_SCOPES="openid profile email groups"
+Environment=PROXY_ROLE_ASSIGNMENT_DRIVER=oidc
+
+# Internal Identity Management
+Environment=GRAPH_USERNAME_MATCH=none
+Environment=GRAPH_LDAP_SERVER_WRITE_ENABLED=true
+Environment=GRAPH_ASSIGN_DEFAULT_USER_ROLE=false
+
+# Account Provisioning
+Environment=PROXY_AUTOPROVISION_ACCOUNTS=true
+Environment=PROXY_AUTOPROVISION_CLAIM_USERNAME=preferred_username
+Environment=PROXY_AUTOPROVISION_CLAIM_EMAIL=email
+Environment=PROXY_AUTOPROVISION_CLAIM_DISPLAYNAME=name
+Environment=PROXY_AUTOPROVISION_CLAIM_GROUPS=groups
+Environment=PROXY_CSP_CONFIG_FILE_LOCATION=/etc/opencloud/csp.yaml
+
+# storage and configuration paths
+Environment=OC_BASE_DATA_PATH=/var/lib/opencloud
+Environment=OC_CONFIG_DIR=/etc/opencloud
+
+# host mounts
+Volume=%h/config:/etc/opencloud:z
+Volume=%h/data:/var/lib/opencloud:z

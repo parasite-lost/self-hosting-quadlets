@@ -1,0 +1,38 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - host_maindomain                    is defined
+      - host_time_zone                     is defined
+      - authelia_user_name                 is defined
+      - authelia_user_home                 is defined
+      - authelia_subdomain                 is defined
+      - authelia_port                      is defined
+      - authelia_storage_encryption_key    is defined
+      - authelia_storage_password          is defined
+      - authelia_smtp_address              is defined
+      - authelia_smtp_sender               is defined
+      - authelia_smtp_username             is defined
+      - authelia_smtp_password             is defined
+      - authelia_session_secret            is defined
+      - authelia_jwt_secret                is defined
+      - authelia_oidc_hmac_secret          is defined
+      - authelia_oidc_jwk_key_file         is defined
+      - authelia_oidc_jwk_key_file         is file
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: TO BE MOVED - Validate service variables are defined
+  ansible.builtin.assert:
+    that:
+      - immich_subdomain           is defined
+      - immich_client_secret_hash  is defined
+      - immich_client_secret_plain is defined
+      - static_website_subdomain   is defined
+      - opencloud_subdomain        is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate

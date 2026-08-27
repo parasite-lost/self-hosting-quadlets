@@ -1,0 +1,37 @@
+{
+	import caddy-dns-config.caddy
+
+	# The sockets that are defined in caddy.socket are created by
+	# systemd. Those sockets are inherited by caddy. Note, these sockets are not
+	# created in the same network namespace that caddy is running in. Instead
+	# they are created in systemd's namespace (i.e. the host system's network
+	# namespace).
+	# caddy.socket defines three sockets that are available to caddy
+	# as file descriptors 3 (fd/3), 4 (fd/4), and 5 (fdgram/5):
+
+	# 2nd socket in caddy.socket
+	default_bind fd/4 {
+		protocols h1 h2
+	}
+
+	# 3rd socket in caddy.socket
+	default_bind fdgram/5 {
+		protocols h3
+	}
+}
+
+import snippets.d/*.caddy
+
+http:// {
+	# 1st socket in caddy.socket
+	bind fd/3 {
+		protocols h1
+	}
+	redir https://{host}{uri}
+}
+
+*.{{ host_maindomain }} {
+	abort
+}
+
+import caddyfile.subdomain.d/*.caddy

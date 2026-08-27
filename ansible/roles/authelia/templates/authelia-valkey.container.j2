@@ -1,0 +1,20 @@
+[Unit]
+Description=Authelia Valkey Container
+
+[Container]
+Pod=authelia.pod
+Label=app=authelia
+ContainerName=authelia-valkey
+
+Image=docker.io/valkey/valkey:9-alpine
+#AutoUpdate=registry
+
+Exec=--port 0 --unixsocket /var/sockets/valkey.sock --unixsocketperm 770
+
+Volume=authelia-valkey-data.volume:/data
+# :z required as volume is shared
+Volume=authelia-internal-communication.volume:/var/sockets:z
+
+[Service]
+ExecStartPre=
+Restart=always

@@ -1,0 +1,23 @@
+{% macro caddy_config_tls(provider_name, credential_acme_api_token_name) %}
+"tls": {
+  "automation": {
+    "policies": [
+      {
+        "issuers": [
+          {
+            "challenges": {
+              "dns": {
+                "provider": {
+                  "api_token": "{file./run/credentials/{{ credential_acme_api_token_name }}}",
+                  "name": "{{ provider_name }}"
+                }
+              }
+            },
+            "module": "acme"
+          }
+        ]
+      }
+    ]
+  }
+}
+{% endmacro %}

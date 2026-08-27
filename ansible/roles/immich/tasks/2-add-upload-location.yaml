@@ -1,0 +1,17 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - immich_upload_location is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Add immich upload location
+  become: true
+  ansible.builtin.file:
+    path: "{{ immich_upload_location }}"
+    state: directory
+    owner: "{{ immich_user_name }}"
+    mode: u=rwx,g=rx,o=

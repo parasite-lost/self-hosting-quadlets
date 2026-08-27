@@ -1,0 +1,11 @@
+[Unit]
+Description=Pod for opencloud
+
+[Pod]
+PodName=opencloud
+Label=app=opencloud
+PublishPort=127.0.0.1:{{ opencloud_port }}:9200
+PodmanArgs=--network=pasta:-T,443
+
+[Install]
+WantedBy=default.target

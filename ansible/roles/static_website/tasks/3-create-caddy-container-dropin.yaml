@@ -1,0 +1,12 @@
+---
+- name: Deploy caddy container dropin
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Create caddy service dropin
+      ansible.builtin.template:
+        src: static-website.conf.j2
+        dest: "{{ caddy_container_d }}/static-website.conf"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart caddy

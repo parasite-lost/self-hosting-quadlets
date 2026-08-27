@@ -1,0 +1,10 @@
+[Unit]
+Description=Pod containing Authelia, Postgres, Valkey
+
+[Pod]
+PodName=authelia
+Label=app=authelia
+{{ 'PublishPort=0.0.0.0:8025:8025' if deploy_purpose == 'development' }}
+
+[Install]
+WantedBy=default.target

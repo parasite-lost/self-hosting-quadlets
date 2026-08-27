@@ -1,0 +1,5 @@
+---
+- name: Finalize caddy setup
+  block:
+    - name: Create caddy port mappings
+      ansible.builtin.import_tasks: 1-create-reverse-proxy-port-mappings.yaml

@@ -1,0 +1,83 @@
+---
+- name: Create caddy quadlets
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Create systemd user folder
+      ansible.builtin.file:
+        path: "{{ caddy_user_home }}/.config/systemd/user"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Add socket unit (socket activation)
+      ansible.builtin.copy:
+        src: caddy.socket
+        dest: "{{ caddy_user_home }}/.config/systemd/user/caddy.socket"
+        mode: u=rw,g=r,o=
+
+    - name: Create container systemd folder
+      ansible.builtin.file:
+        path: "{{ caddy_user_home }}/.config/containers/systemd"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create (runtime) data volume
+      ansible.builtin.copy:
+        src: caddy-data.volume
+        dest: "{{ caddy_user_home }}/.config/containers/systemd/caddy-data.volume"
+        mode: u=rw,g=r,o=
+
+    - name: Create (runtime) config volume
+      ansible.builtin.copy:
+        src: caddy-config.volume
+        dest: "{{ caddy_user_home }}/.config/containers/systemd/caddy-config.volume"
+        mode: u=rw,g=r,o=
+
+    - name: Create caddy container dropin folder
+      ansible.builtin.file:
+        path: "{{ caddy_container_d }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Caddy has credential (non-localhost dns provider)
+      when: caddy_dns_provider != "localhost"
+      ansible.builtin.set_fact:
+        _caddy_has_credentials: true
+
+    - name: Check credential dropin exists
+      ansible.builtin.stat:
+        path: "{{ caddy_container_d_credential }}"
+      register: caddy_credential_file
+      diff: true
+
+    - name: Create credential
+      when: caddy_refresh_credential or not caddy_credential_file.stat.exists
+      block:
+        - name: Create cloudflare credential
+          when: caddy_dns_provider == "cloudflare"
+          block:
+            - name: Create encrypted systemd credential
+              ansible.builtin.command:
+                cmd: "systemd-creds encrypt --user --pretty --name={{ caddy_cloudflare_acme_api_token_name }} - -"
+                stdin: "{{ caddy_cloudflare_acme_api_token }}"
+              register: caddy_credential_acme_api_token
+              changed_when: false
+
+            - name: Add systemd service credential dropin
+              ansible.builtin.copy:
+                dest: "{{ caddy_container_d_credential }}"
+                content: |
+                  [Service]
+                  {{ caddy_credential_acme_api_token.stdout }}
+                mode: u=rw,g=r,o=
+              notify:
+                - Restart caddy
+
+    - name: Add container unit
+      ansible.builtin.template:
+        src: caddy.container.j2
+        dest: "{{ caddy_container }}"
+        mode: u=rw,g=r,o=
+      notify:
+        - Enable caddy
+        - Restart caddy

@@ -1,0 +1,36 @@
+---
+- name: Debug local_user
+  ansible.builtin.debug:
+    var: local_user
+- name: Debug local_home
+  ansible.builtin.debug:
+    var: local_home
+- name: Debug deploy_purpose
+  ansible.builtin.debug:
+    var: deploy_purpose
+- name: Debug ansible_facts["hostname"]
+  ansible.builtin.debug:
+    # requires gather_facts: true
+    var: ansible_facts["hostname"]
+- name: Debug ansible_facts["user_id"]
+  ansible.builtin.debug:
+    # requires gather_facts: true
+    var: ansible_facts["user_id"]
+- name: Debug ansible_user
+  ansible.builtin.debug:
+    var: ansible_user
+- name: Debug ansible_host
+  ansible.builtin.debug:
+    var: ansible_host
+- name: Debug hostvars[inventory_hostname]['ansible_user']
+  ansible.builtin.debug:
+    var: hostvars[inventory_hostname]['ansible_user']
+- name: Debug hostvars[inventory_hostname]['ansible_host']
+  ansible.builtin.debug:
+    var: hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname)
+- name: Debug inventory_hostname
+  ansible.builtin.debug:
+    var: inventory_hostname
+- name: Debug connection type
+  ansible.builtin.debug:
+    var: ansible_connection

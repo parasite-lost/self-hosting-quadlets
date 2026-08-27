@@ -1,0 +1,16 @@
+- name: Deploy static website
+  block:
+    - name: Check variables
+      ansible.builtin.import_tasks: 0-validate-static-website-variables.yaml
+
+    - name: Create user
+      ansible.builtin.import_tasks: 1-create-static_website-user.yaml
+
+    - name: Deploy static website content
+      ansible.builtin.import_tasks: 2-deploy-static-website.yaml
+
+    - name: Deploy caddy service dropin
+      ansible.builtin.import_tasks: 3-create-caddy-container-dropin.yaml
+
+    - name: Deploy caddy configuration dropin
+      ansible.builtin.import_tasks: 4-create-caddy-config-dropin.yaml

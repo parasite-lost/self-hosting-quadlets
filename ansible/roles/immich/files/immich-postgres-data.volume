@@ -1,0 +1,5 @@
+[Unit]
+Description=Immich postgres data
+
+[Volume]
+Label=app=immich

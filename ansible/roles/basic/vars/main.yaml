@@ -1,0 +1,4 @@
+---
+basic_required_packages:
+  - systemd-container
+  - podman

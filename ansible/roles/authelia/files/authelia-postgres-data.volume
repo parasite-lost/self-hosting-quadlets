@@ -1,0 +1,5 @@
+[Unit]
+Description=Volume for authelia's postgres database
+
+[Volume]
+Label=app=authelia

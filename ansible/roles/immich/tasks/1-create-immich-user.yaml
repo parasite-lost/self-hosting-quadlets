@@ -1,0 +1,20 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - immich_user_name is defined
+      - immich_user_home is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Create immich user
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: create-service-user.yaml
+  tags: always
+  vars:
+    common_user_name: "{{ immich_user_name }}"
+    common_user_home: "{{ immich_user_home }}"
+    common_systemd: false

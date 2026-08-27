@@ -1,0 +1,47 @@
+---
+- name: Validate required variables to create lingering user
+  ansible.builtin.assert:
+    that:
+      - common_user_name is defined
+      - common_user_home is defined
+      - local_user       is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Create lingering user without login
+  become: true
+  block:
+    - name: Create user {{ common_user_name }}
+      # do not accidentally break local user or remote ansible_user
+      when: (ansible_connection != "local" and common_user_name != ansible_user) or common_user_name != local_user
+      ansible.builtin.user:
+        name: "{{ common_user_name }}"
+        create_home: true
+        home: "{{ common_user_home }}"
+        password: '!'
+      diff: true
+
+    - name: Enable lingering for {{ common_user_name }}
+      ansible.builtin.command:
+        cmd: "loginctl enable-linger {{ common_user_name }}"
+      changed_when: false
+
+- name: Create systemd user and quadlet folders
+  become: true
+  become_user: "{{ common_user_name }}"
+  block:
+    - name: Create systemd user folder for {{ common_user_name }}
+      when: common_systemd
+      ansible.builtin.file:
+        path: "{{ common_user_home }}/.config/systemd/user"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create quadlet folder for {{ common_user_name }}
+      when: common_quadlets
+      ansible.builtin.file:
+        path: "{{ common_user_home }}/.config/containers/systemd"
+        state: directory
+        mode: u=rwx,g=rx,o=

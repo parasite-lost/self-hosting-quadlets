@@ -1,0 +1,20 @@
+---
+# systemd authelia app
+authelia_app_container: "{{ authelia_user_home }}/.config/containers/systemd/authelia-app.container"
+authelia_app_container_d: "{{ authelia_app_container }}.d"
+authelia_app_container_d_credentials: "{{ authelia_app_container_d }}/credentials.conf"
+# systemd authelia postgres
+authelia_postgres_container: "{{ authelia_user_home }}/.config/containers/systemd/authelia-postgres.container"
+authelia_postgres_container_d: "{{ authelia_postgres_container }}.d"
+authelia_postgres_container_d_credentials: "{{ authelia_postgres_container_d }}/credentials.conf"
+
+# can be overridden with --extra-vars '{"authelia_refresh_credential": true}'
+authelia_refresh_credential: false
+# credential names
+authelia_smtp_password_name: smtp-token
+authelia_storage_encryption_key_name: storage-encryption-key
+authelia_storage_password_name: storage-password
+authelia_jwt_secret_name: jwt-secret
+authelia_session_secret_name: session-secret
+authelia_oidc_hmac_secret_name: "oidc-hmac-secret"
+authelia_oidc_jwk_key_name: "oidc-jwk-private-key"

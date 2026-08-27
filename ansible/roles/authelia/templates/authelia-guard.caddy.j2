@@ -1,0 +1,53 @@
+(authelia_guard) {
+	forward_auth 127.0.0.1:{{ authelia_port }} {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+}
+
+(reverse_proxy_with_authelia) {
+	# reverse_proxy with authelia authentication
+	# args[0]: subdomain
+	# args[1]: proxy port
+	{args[0]}.{{ host_maindomain }} {
+		import default_site_settings
+
+		import authelia_guard
+
+		reverse_proxy 127.0.0.1:{args[1]}
+	}
+}
+
+(mtls_or_authelia_fallback) {
+	# args[0]: pem CA certificate name
+	tls {
+		client_auth {
+			mode verify_if_given
+			trust_pool file {
+				pem_file /etc/caddy/certs/{args[0]}
+			}
+		}
+	}
+	@missing_mtls_certificate {
+		expression `{tls_client_subject} == ""`
+	}
+	forward_auth @missing_mtls_certificate 127.0.0.1:{{ authelia_port }} {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+}
+
+(reverse_proxy_with_mtls_or_authelia) {
+	# reverse_proxy with mTLS certificate or authelia authentication fallback
+	# args[0]: subdomain
+	# args[1]: proxy port
+	# args[2]: pem CA certificate name
+
+	{args[0]}.{{ host_maindomain }} {
+		import default_site_settings
+
+		import mtls_or_authelia_fallback {args[2]}
+
+		reverse_proxy {args[1]}
+	}
+}

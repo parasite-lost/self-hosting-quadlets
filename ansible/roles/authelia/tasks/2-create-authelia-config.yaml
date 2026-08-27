@@ -1,0 +1,186 @@
+---
+- name: Create authelia configuration
+  become: true
+  become_user: "{{ authelia_user_name }}"
+  block:
+    - name: Authelia server configuradion
+      block:
+        - name: Create config folder
+          ansible.builtin.file:
+            path: "{{ authelia_user_home }}/config"
+            state: directory
+            mode: u=rwx,g=rx,o=
+
+        - name: Create authelia configuration
+          ansible.builtin.template:
+            src: configuration.yml.j2
+            dest: "{{ authelia_user_home }}/config/configuration.yml"
+            mode: u=rw,g=r,o=
+          notify:
+            - Restart authelia
+
+        - name: Create config folder dropin
+          ansible.builtin.file:
+            path: "{{ authelia_user_home }}/config/config.d"
+            state: directory
+            mode: u=rwx,g=rx,o=
+
+        - name: Create authelia access control configuration
+          ansible.builtin.template:
+            src: config-access-control.yml.j2
+            dest: "{{ authelia_user_home }}/config/config.d/access-control.yml"
+            mode: u=rw,g=r,o=
+          notify:
+            - Restart authelia
+
+        - name: Create authelia authentication configuration
+          ansible.builtin.template:
+            src: config-authentication.yml.j2
+            dest: "{{ authelia_user_home }}/config/config.d/authentication.yml"
+            mode: u=rw,g=r,o=
+          notify:
+            - Restart authelia
+
+        - name: Create authelia notifier configuration
+          ansible.builtin.template:
+            src: config-notifier.yml.j2
+            dest: "{{ authelia_user_home }}/config/config.d/notifier.yml"
+            mode: u=rw,g=r,o=
+          notify:
+            - Restart authelia
+
+    - name: Add authelia asset customization
+      block:
+        - name: Create asset folder
+          ansible.builtin.file:
+            path: "{{ authelia_user_home }}/assets"
+            state: directory
+            mode: u=rwx,g=rx,o=
+
+        - name: Add custom authelia logo
+          when: authelia_logo is defined
+          block:
+            - name: Validate file exists
+              ansible.builtin.assert:
+                that:
+                  - authelia_logo is file
+                fail_msg: "Authelia logo '{{ authelia_logo }}' does not exist."
+                quiet: true
+              tags:
+                - validate
+
+            - name: Add logo
+              ansible.builtin.copy:
+                src: "{{ authelia_logo }}"
+                dest: "{{ authelia_user_home }}/assets/logo.png"
+                mode: u=rw,g=r,o=
+              notify:
+                - Restart authelia
+
+        - name: Add authelia favicon
+          when: authelia_favicon is defined
+          block:
+            - name: Validate file exists
+              ansible.builtin.assert:
+                that:
+                  - authelia_favicon is file
+                fail_msg: "Authelia favicon '{{ authelia_favicon }}' does not exist."
+                quiet: true
+              tags:
+                - validate
+
+            - name: Add favicon
+              ansible.builtin.copy:
+                src: "{{ authelia_favicon }}"
+                dest: "{{ authelia_user_home }}/assets/favicon.ico"
+                mode: u=rw,g=r,o=
+              notify:
+                - Restart authelia
+
+    - name: Add authelia email customization
+      block:
+        - name: Create authelia email template folder
+          ansible.builtin.file:
+            path: "{{ authelia_user_home }}/email_templates"
+            state: directory
+            mode: u=rwx,g=rx,o=
+
+        - name: Add authelia OTC mail html template
+          when: authelia_otc_html_template is defined
+          block:
+            - name: Validate file exists
+              ansible.builtin.assert:
+                that:
+                  - authelia_otc_html_template is file
+                fail_msg: "Authelia email template '{{ authelia_otc_html_template }}' does not exist."
+                quiet: true
+              tags:
+                - validate
+
+            - name: Add OTC mail html template
+              ansible.builtin.copy:
+                src: "{{ authelia_otc_html_template }}"
+                dest: "{{ authelia_user_home }}/email_templates/IdentityVerificationOTC.html"
+                mode: u=rw,g=r,o=
+              notify:
+                - Restart authelia
+
+        - name: Add authelia OTC mail txt template
+          when: authelia_otc_txt_template is defined
+          block:
+            - name: Validate file exists
+              ansible.builtin.assert:
+                that:
+                  - authelia_otc_txt_template is file
+                fail_msg: "Authelia email template '{{ authelia_otc_txt_template }}' does not exist."
+                quiet: true
+              tags:
+                - validate
+
+            - name: Add OTC mail txt template
+              ansible.builtin.copy:
+                src: "{{ authelia_otc_txt_template }}"
+                dest: "{{ authelia_user_home }}/email_templates/IdentityVerificationOTC.txt"
+                mode: u=rw,g=r,o=
+              notify:
+                - Restart authelia
+
+        - name: Add authelia event mail html template
+          when: authelia_event_html_template is defined
+          block:
+            - name: Validate file exists
+              ansible.builtin.assert:
+                that:
+                  - authelia_event_html_template is file
+                fail_msg: "Authelia email template '{{ authelia_event_html_template }}' does not exist."
+                quiet: true
+              tags:
+                - validate
+
+            - name: Add event mail html template
+              ansible.builtin.copy:
+                src: "{{ authelia_event_html_template }}"
+                dest: "{{ authelia_user_home }}/email_templates/Event.html"
+                mode: u=rw,g=r,o=
+              notify:
+                - Restart authelia
+
+        - name: Add authelia event mail txt template
+          when: authelia_event_txt_template is defined
+          block:
+            - name: Validate file exists
+              ansible.builtin.assert:
+                that:
+                  - authelia_event_txt_template is file
+                fail_msg: "Authelia email template '{{ authelia_event_txt_template }}' does not exist."
+                quiet: true
+              tags:
+                - validate
+
+            - name: Add event mail txt template
+              ansible.builtin.copy:
+                src: "{{ authelia_event_txt_template }}"
+                dest: "{{ authelia_user_home }}/email_templates/Event.txt"
+                mode: u=rw,g=r,o=
+              notify:
+                - Restart authelia

@@ -1,0 +1,45 @@
+#!/bin/sh
+
+SCRIPT_NAME=$(basename $0)
+
+usage() {
+    echo "Usage: ${SCRIPT_NAME} {on|off}" >&2
+}
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Error: ${SCRIPT_NAME} must be run as root (use sudo)." >&2
+    exit 1
+fi
+
+if [ "$#" -ne 1 ]; then
+    usage
+    exit 1
+fi
+
+ACTION="$1"
+
+case "${ACTION}" in
+    on)
+        echo "Open ports for http/https/http3"
+        firewall-cmd --permanent --add-service=http
+        firewall-cmd --permanent --add-service=https
+        firewall-cmd --permanent --add-service=http3
+        echo "Reloading firewall..."
+        firewall-cmd --reload
+        echo "Ports are now OPEN."
+        ;;
+    off)
+        echo "Close ports for http/https/http3"
+        firewall-cmd --permanent --remove-service=http
+        firewall-cmd --permanent --remove-service=https
+        firewall-cmd --permanent --remove-service=http3
+        echo "Reloading firewall..."
+        firewall-cmd --reload
+        echo "Ports are now CLOSED."
+        ;;
+    *)
+        echo "Invalid argument: '${ACTION}'." >&2
+        usage
+        exit 1
+        ;;
+esac

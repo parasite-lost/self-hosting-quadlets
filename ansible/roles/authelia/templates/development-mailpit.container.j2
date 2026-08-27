@@ -1,0 +1,19 @@
+[Unit]
+Description=Mailpit Test Mail Server (Development Only)
+
+[Container]
+# inside authelia pod so port 1025 of mailpit is reachable in pod network by authelia
+Pod=authelia.pod
+Label=app=authelia
+
+Environment=MP_SMTP_AUTH_ACCEPT_ANY=true
+Environment=MP_SMTP_AUTH_ALLOW_INSECURE=true
+
+Image=docker.io/axllent/mailpit:latest
+ContainerName=mailpit
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

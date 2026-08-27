@@ -1,0 +1,198 @@
+{
+	acme_dns cloudflare {file./run/credentials/api-token}
+
+	default_bind fd/4 {
+		protocols h1 h2
+	}
+
+	default_bind fdgram/5 {
+		protocols h3
+	}
+}
+
+http:// {
+	bind fd/3 {
+		protocols h1
+	}
+	redir https://{host}{uri} permanent
+}
+
+*.example.com {
+	abort
+}
+
+a1-naked.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	reverse_proxy 127.0.0.1:9091
+}
+
+a2-naked.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	reverse_proxy 127.0.0.1:8080
+}
+
+b1-forward-auth.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	forward_auth 127.0.0.1:9091 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+	reverse_proxy 127.0.0.1:1111
+}
+
+b2-forward-auth.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	forward_auth 127.0.0.1:9091 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+	reverse_proxy 127.0.0.1:1112
+}
+
+c1-mtls-forward-auth-fallback.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	tls {
+		client_auth {
+			mode verify_if_given
+			trust_pool file {
+				pem_file /etc/caddy/certs/root@common.example.com.pem
+			}
+		}
+	}
+	@missing_mtls_certificate {
+		expression `{tls_client_subject} == ""`
+	}
+	forward_auth @missing_mtls_certificate 127.0.0.1:9091 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+
+	reverse_proxy 127.0.0.1:2221
+}
+
+c2-mtls-forward-auth-fallback.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	tls {
+		client_auth {
+			mode verify_if_given
+			trust_pool file {
+				pem_file /etc/caddy/certs/root@common.example.com.pem
+			}
+		}
+	}
+	@missing_mtls_certificate {
+		expression `{tls_client_subject} == ""`
+	}
+	forward_auth @missing_mtls_certificate 127.0.0.1:9091 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+
+	reverse_proxy 127.0.0.1:2222
+}
+
+c3-mtls-forward-auth-fallback.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	tls {
+		client_auth {
+			mode verify_if_given
+			trust_pool file {
+				pem_file /etc/caddy/certs/root@owner.example.com.pem
+			}
+		}
+	}
+	@missing_mtls_certificate {
+		expression `{tls_client_subject} == ""`
+	}
+	forward_auth @missing_mtls_certificate 127.0.0.1:9091 {
+		uri /api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
+	}
+
+	reverse_proxy 127.0.0.1:2223
+}
+
+d1-mtls-public.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	tls {
+		client_auth {
+			# enforcing mTLS exclusively for public remote IPs requires using json config
+			mode require_and_verify
+			trust_pool file {
+				pem_file /etc/caddy/certs/root@common.example.com.pem
+			}
+		}
+	}
+
+	reverse_proxy 127.0.0.1:3331
+}
+
+d2-mtls-public.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	tls {
+		client_auth {
+			# enforcing mTLS exclusively for public remote IPs requires using json config
+			mode require_and_verify
+			trust_pool file {
+				pem_file /etc/caddy/certs/root@common.example.com.pem
+			}
+		}
+	}
+
+	reverse_proxy 127.0.0.1:3332
+}
+
+d3-mtls-public.example.com {
+	encode
+	header {
+		X-Robots-Tag "noindex,nofollow"
+		defer
+	}
+	tls {
+		client_auth {
+			# enforcing mTLS exclusively for public remote IPs requires using json config
+			mode require_and_verify
+			trust_pool file {
+				pem_file /etc/caddy/certs/root@owner.example.com.pem
+			}
+		}
+	}
+
+	reverse_proxy 127.0.0.1:3333
+}

@@ -1,0 +1,7 @@
+---
+- name: Setup production
+  hosts: production
+  roles:
+    - mdns
+    - ddns
+    - remote_service

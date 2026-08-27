@@ -1,0 +1,64 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - static_website_files     is defined
+      - static_website_files     is directory
+      - static_website_templates is defined
+      - static_website_templates is directory
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Deploy static website
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Create static website folder
+      ansible.builtin.file:
+        path: "{{ caddy_user_home }}/www"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Deploy static website content
+      block:
+        - name: Create directories (files)
+          ansible.builtin.file:
+            path: "{{ caddy_user_home }}/www/{{ item.path }}"
+            state: directory
+            mode: u=rwx,g=rx,o=
+          with_community.general.filetree: "{{ static_website_files }}/"
+          when: item.state == "directory"
+          loop_control:
+            label: "{{ item.path }}"
+
+        - name: Deploy files
+          ansible.builtin.copy:
+            src: "{{ item.src }}"
+            dest: "{{ caddy_user_home }}/www/{{ item.path }}"
+            mode: u=rw,g=r,o=
+          with_community.general.filetree: "{{ static_website_files }}/"
+          when: item.state == "file"
+          loop_control:
+            label: "{{ item.path }}"
+
+        - name: Create directories (files)
+          ansible.builtin.file:
+            path: "{{ caddy_user_home }}/www/{{ item.path }}"
+            state: directory
+            mode: u=rwx,g=rx,o=
+          with_community.general.filetree: "{{ static_website_templates }}/"
+          when: item.state == "directory"
+          loop_control:
+            label: "{{ item.path }}"
+
+        - name: Deploy templated files
+          ansible.builtin.template:
+            src: "{{ item.src }}"
+            dest: "{{ caddy_user_home }}/www/{{ item.path | splitext | first }}"
+            mode: u=rw,g=r,o=
+          with_community.general.filetree: "{{ static_website_templates }}/"
+          when: item.state == "file"
+          loop_control:
+            label: "{{ item.path }}"

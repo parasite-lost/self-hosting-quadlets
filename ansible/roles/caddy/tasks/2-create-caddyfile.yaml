@@ -1,0 +1,55 @@
+---
+- name: Create Caddyfile and configuration dropin folders
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Create caddy configuration directory
+      ansible.builtin.file:
+        path: "{{ caddy_dir_config }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create caddy snippet dropin directory
+      ansible.builtin.file:
+        path: "{{ caddy_dir_snippet_d }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create caddy configuration dropin directory for explicit subdomain handler
+      ansible.builtin.file:
+        path: "{{ caddy_dir_caddyfile_subdomain_d }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create default site settings snippet
+      ansible.builtin.template:
+        src: "default-site-settings.caddy.j2"
+        dest: "{{ caddy_dir_snippet_d }}/default-site-settings.caddy"
+        mode: u=rw,g=r,o=
+
+    - name: Create naked reverse proxy snippet
+      ansible.builtin.template:
+        src: "naked.caddy.j2"
+        dest: "{{ caddy_dir_snippet_d }}/naked.caddy"
+        mode: u=rw,g=r,o=
+
+    - name: Create mTLS guard snippet (mtls_guard)
+      ansible.builtin.template:
+        src: "mtls-guard.caddy.j2"
+        dest: "{{ caddy_dir_snippet_d }}/mtls-guard.caddy"
+        mode: u=rw,g=r,o=
+      notify: Reload caddy
+
+    - name: Create caddy dns configuration directory
+      ansible.builtin.template:
+        src: "caddy-dns-config-{{ caddy_dns_provider }}.caddy.j2"
+        dest: "{{ caddy_dns_configuration_file }}"
+        mode: u=rw,g=r,o=
+      notify: Reload caddy
+
+    - name: Create Caddyfile
+      ansible.builtin.template:
+        src: Caddyfile.j2
+        dest: "{{ caddy_caddyfile }}"
+        mode: u=rw,g=r,o=
+      notify: Reload caddy

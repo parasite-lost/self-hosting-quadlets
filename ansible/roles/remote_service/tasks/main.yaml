@@ -1,0 +1,41 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - remote_service_user_name    is defined
+      - remote_service_user_home    is defined
+      - host_maindomain             is defined
+      - remote_service_subdomain    is defined
+      - remote_service_port         is defined
+      - remote_service_client_admin is defined
+      - remote_service_ssh_key      is defined
+      - remote_service_key_options  is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Create remote_service user
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: create-service-user.yaml
+  tags: always
+  vars:
+    common_user_name: "{{ remote_service_user_name }}"
+    common_user_home: "{{ remote_service_user_home }}"
+    common_quadlets: false
+    common_systemd: false
+
+- name: Deploy authorized key
+  become: true
+  ansible.posix.authorized_key:
+    user: "{{ remote_service_user_name }}"
+    key: "{{ remote_service_ssh_key }}"
+    key_options: "{{ remote_service_key_options }}"
+
+- name: Restricted ssh
+  become: true
+  ansible.builtin.template:
+    src: "90-remote_service.conf.j2"
+    dest: "/etc/ssh/sshd_config.d/90-{{ remote_service_user_name }}.conf"
+    mode: u=r,g=,o=

@@ -1,0 +1,10 @@
+---
+- name: Pre-checks
+  ansible.builtin.import_playbook: pre-checks.yaml
+
+- name: Basic system setup
+  hosts: all
+  gather_facts: true
+  roles:
+    - basic
+    - security

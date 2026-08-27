@@ -1,0 +1,9 @@
+---
+- name: Restart authelia
+  become: true
+  become_user: "{{ authelia_user_name }}"
+  ansible.builtin.systemd_service:
+    service: "authelia-pod.service"
+    state: restarted
+    scope: user
+    daemon_reload: true

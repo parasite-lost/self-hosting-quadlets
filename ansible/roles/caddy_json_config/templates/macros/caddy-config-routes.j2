@@ -1,0 +1,50 @@
+{% from 'macros/caddy-config-common-macros.j2' import route_match_host %}
+{% from 'macros/caddy-config-route-naked.j2' import route_naked %}
+{% from 'macros/caddy-config-route-forward-auth.j2' import route_forward_auth %}
+{% from 'macros/caddy-config-route-mtls-forward-auth-fallback.j2' import route_mtls_forward_auth_fallback %}
+
+{% macro caddy_config_routes(web_services, maindomain, auth_service_port) %}
+
+{% set _service_without_sso = web_services | selectattr('auth', 'eq', False) | list %}
+{% set services_naked = _service_without_sso | selectattr('mtls', 'eq', 'none') | list %}
+{% set services_only_mtls = _service_without_sso | selectattr('mtls', 'eq', 'required') | list %}
+
+{% set _services_with_sso = web_services | selectattr('auth', 'eq', True) | list %}
+{% set services_only_sso = _services_with_sso | selectattr('mtls', 'eq', 'none') | list %}
+{% set services_mtls_and_sso_fallback = _services_with_sso | selectattr('mtls', 'eq', 'optional') | list %}
+
+"routes": [
+  {% for service in services_naked %}
+    {{ route_naked(service, maindomain) }},
+  {% endfor %}
+  {% for service in services_only_mtls %}
+    {# mtls enforcement is done in tls_connection_policies #}
+    {{ route_naked(service, maindomain) }},
+  {% endfor %}
+  {% for service in services_only_sso %}
+    {{ route_forward_auth(service, maindomain, auth_service_port) }},
+  {% endfor %}
+  {% for service in services_mtls_and_sso_fallback %}
+    {{ route_mtls_forward_auth_fallback(service, maindomain, auth_service_port) }},
+  {% endfor %}
+  {
+    {{ route_match_host("*", maindomain) }},
+    "handle": [
+      {
+        "handler": "subroute",
+        "routes": [
+          {
+            "handle": [
+              {
+                "abort": true,
+                "handler": "static_response"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "terminal": true
+  }
+]
+{% endmacro %}

@@ -1,0 +1,22 @@
+{% from 'macros/caddy-config-common-macros.j2' import route_match_host, encode, set_global_headers, reverse_proxy %}
+
+{% macro route_naked(service, maindomain) %}
+{
+  {{ route_match_host(service.subdomain, maindomain) }},
+  "handle": [
+    {
+      "handler": "subroute",
+      "routes": [
+        {
+          "handle": [
+            {{ set_global_headers() }},
+            {{ encode() }},
+            {{ reverse_proxy(service.port) }}
+          ]
+        }
+      ]
+    }
+  ],
+  "terminal": true
+}
+{% endmacro %}

@@ -1,0 +1,79 @@
+---
+- name: Create authelia quadlets
+  become: true
+  become_user: "{{ authelia_user_name }}"
+  block:
+    - name: Create systemd folder
+      ansible.builtin.file:
+        path: "{{ authelia_user_home }}/.config/systemd/user"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create quadlet folder
+      ansible.builtin.file:
+        path: "{{ authelia_user_home }}/.config/containers/systemd"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create internal communication volume
+      ansible.builtin.copy:
+        src: authelia-internal-communication.volume
+        dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia-internal-communication.volume"
+        mode: u=rw,g=r,o=
+
+    - name: Create valkey data volume
+      ansible.builtin.copy:
+        src: authelia-valkey-data.volume
+        dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia-valkey-data.volume"
+        mode: u=rw,g=r,o=
+
+    - name: Create valkey container
+      ansible.builtin.template:
+        src: authelia-valkey.container.j2
+        dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia-valkey.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart authelia
+
+    - name: Create postgres data volume
+      ansible.builtin.copy:
+        src: authelia-postgres-data.volume
+        dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia-postgres-data.volume"
+        mode: u=rw,g=r,o=
+
+    - name: Create postgres container
+      ansible.builtin.template:
+        src: authelia-postgres.container.j2
+        dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia-postgres.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart authelia
+
+    - name: Create authelia app socket
+      ansible.builtin.template:
+        src: authelia-app.socket.j2
+        dest: "{{ authelia_user_home }}/.config/systemd/user/authelia-app.socket"
+        mode: u=rw,g=r,o=
+
+    - name: Create authelia app container
+      ansible.builtin.template:
+        src: authelia-app.container.j2
+        dest: "{{ authelia_app_container }}"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart authelia
+
+    - name: Create authelia pod
+      ansible.builtin.template:
+        src: authelia.pod.j2
+        dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia.pod"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart authelia
+
+    - name: Enable authelia
+      ansible.builtin.systemd_service:
+        unit: "authelia-pod.service"
+        scope: user
+        enabled: true
+        daemon_reload: true

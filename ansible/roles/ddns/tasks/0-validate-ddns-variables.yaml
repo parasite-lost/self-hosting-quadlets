@@ -1,0 +1,13 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - ddns_user_name  is defined
+      - ddns_user_home  is defined
+      - ddns_api_token  is defined
+      - host_maindomain is defined
+      - host_time_zone  is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate

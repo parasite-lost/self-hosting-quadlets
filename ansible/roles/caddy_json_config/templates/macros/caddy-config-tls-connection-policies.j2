@@ -1,0 +1,53 @@
+{% macro caddy_config_tls_connection_policies(web_services, maindomain) %}
+"tls_connection_policies": [
+  {% set mtls_required = web_services | selectattr('mtls', 'eq', 'required') | list %}
+  {% set has_required = mtls_required | length > 0 %}
+  {% set mtls_optional = web_services | selectattr('mtls', 'eq', 'optional') | list %}
+  {% set has_optional = mtls_optional | length > 0 %}
+  {% for common_cert, services in mtls_optional | groupby('mtls_cert') %}
+  {
+    "client_authentication": {
+      "ca": {
+        "pem_files": [
+          "/etc/caddy/certs/{{ common_cert }}"
+        ],
+        "provider": "file"
+      },
+      "mode": "verify_if_given"
+    },
+    "match": {
+      "sni": [
+        {% for service in services %}
+        "{{ service.subdomain }}.{{ maindomain }}"{%- if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }
+  }{% if not loop.last %},{% endif %}
+  {% endfor %}
+  {% if has_required and has_optional %},{% endif %}
+  {% for common_cert, services in mtls_required | groupby('mtls_cert') %}
+  {
+    "client_authentication": {
+      "ca": {
+        "pem_files": [
+          "/etc/caddy/certs/{{ common_cert }}"
+        ],
+        "provider": "file"
+      },
+      "mode": "require_and_verify"
+    },
+    "match": {
+      "remote_ip": {
+        "not_ranges": ["127.0.0.0/8", "::1/128"]
+      },
+      "sni": [
+        {% for service in services %}
+        "{{ service.subdomain }}.{{ maindomain }}"{%- if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }
+  }{%- if not loop.last %},{% endif %}
+  {% endfor %}
+  {% if has_required or has_optional %},{}{% endif %}
+]
+{% endmacro %}

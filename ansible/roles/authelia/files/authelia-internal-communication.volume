@@ -1,0 +1,8 @@
+[Unit]
+Description=Volume (in-memory) for internal authelia communication
+
+[Volume]
+Label=app=authelia
+Type=tmpfs
+Device=tmpfs
+Options=size=10M,mode=1777

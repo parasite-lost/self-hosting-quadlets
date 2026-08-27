@@ -1,0 +1,12 @@
+[Unit]
+Description=Pod containing Immich, Postgres, Valkey
+
+[Pod]
+PodName=immich
+Label=app=immich
+PublishPort=127.0.0.1:{{ immich_port }}:2283
+# allow local acces to authelia (via caddy)
+PodmanArgs=--network=pasta:-T,443
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,3 @@
+---
+caddy_user_name: "caddy"
+caddy_user_home: "/home/{{ caddy_user_name }}"

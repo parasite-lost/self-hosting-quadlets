@@ -1,0 +1,23 @@
+---
+- name: Create caddy communication unix socket
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Add caddyfile dropin configuration for authelia
+      ansible.builtin.template:
+        src: authelia.caddy.j2
+        dest: "{{ caddy_dir_caddyfile_subdomain_d }}/authelia.caddy"
+        mode: u=rw,g=r,o=
+      notify: Reload caddy
+
+    - name: Add caddy snippet dropin for (authelia_guard)
+      ansible.builtin.template:
+        src: authelia-guard.caddy.j2
+        dest: "{{ caddy_dir_snippet_d }}/authelia-guard.caddy"
+        mode: u=rw,g=r,o=
+      notify: Reload caddy
+
+    - name: Add caddy pasta port mapping # noqa: var-naming
+      ansible.builtin.set_fact:
+        # add '-T,9091' to caddy's pasta parameters
+        caddy_pasta_port_map: "{{ caddy_pasta_port_map | union(['-T,' ~ authelia_port]) }}"

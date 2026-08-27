@@ -1,0 +1,7 @@
+---
+# validation
+caddy_json_config_acme_provider: "{{ caddy_dns_provider }}"
+caddy_json_config_credential_acme_api_token_name: "{{ caddy_cloudflare_acme_api_token_name }}"
+caddy_json_config_maindomain: "{{ host_maindomain }}"
+caddy_json_config_web_services: []
+caddy_json_config_auth_service_port: 9091

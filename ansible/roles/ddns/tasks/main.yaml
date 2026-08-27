@@ -1,0 +1,12 @@
+---
+- name: Check variables
+  ansible.builtin.import_tasks: 0-validate-ddns-variables.yaml
+
+- name: Create ddns user
+  ansible.builtin.import_tasks: 1-create-ddns-user.yaml
+
+- name: Add local ddns update script
+  ansible.builtin.import_tasks: 2-local-script.yaml
+
+- name: Add systemd service
+  ansible.builtin.import_tasks: 3-systemd-service.yaml

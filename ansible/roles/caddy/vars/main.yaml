@@ -1,0 +1,26 @@
+---
+caddy_dir_config: "{{ caddy_user_home }}/config"
+caddy_caddyfile: "{{ caddy_dir_config }}/Caddyfile"
+caddy_dns_configuration_file: "{{ caddy_dir_config }}/caddy-dns-config.caddy"
+caddy_dir_snippet_d: "{{ caddy_dir_config }}/snippets.d"
+caddy_dir_caddyfile_subdomain_d: "{{ caddy_dir_config }}/caddyfile.subdomain.d"
+caddy_dir_certs: "{{ caddy_dir_config }}/certs"
+
+_caddy_supported_dns_provider:
+  - "localhost"
+  - "cloudflare"
+
+caddy_pasta_port_map: []
+
+caddy_service_unit: "caddy.service"
+caddy_container_unit: "caddy.container"
+caddy_container: "{{ caddy_user_home }}/.config/containers/systemd/{{ caddy_container_unit }}"
+caddy_container_d: "{{ caddy_container }}.d"
+caddy_port_mapping_dropin: "{{ caddy_container_d }}/port-mapping.conf"
+
+# can be overridden with --extra-vars '{"caddy_refresh_credential": true}'
+caddy_refresh_credential: false
+# remember when credential is generated - so it is mounted into the container
+_caddy_has_credentials: false
+caddy_cloudflare_acme_api_token_name: api-token
+caddy_container_d_credential: "{{ caddy_container_d }}/credentials.conf"

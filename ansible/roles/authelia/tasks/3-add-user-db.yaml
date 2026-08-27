@@ -1,0 +1,20 @@
+---
+- name: Validate user_database exists
+  ansible.builtin.assert:
+    that:
+      - authelia_user_database is defined
+      - authelia_user_database is file
+    fail_msg: "Authelia user database file '{{ authelia_user_database }}' does not exists for {{ inventory_hostname }}."
+    quiet: true
+  tags:
+    - validate
+
+- name: Add authelia user database
+  become: true
+  become_user: "{{ authelia_user_name }}"
+  ansible.builtin.copy:
+    src: "{{ authelia_user_database }}"
+    dest: "{{ authelia_user_home }}/config/user_database.yml"
+    mode: u=rw,g=r,o=
+    force: false
+  tags: user-db

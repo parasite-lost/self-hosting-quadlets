@@ -1,0 +1,11 @@
+---
+opencloud_user_name: "opencloud"
+opencloud_user_home: "/home/{{ opencloud_user_name }}"
+
+opencloud_subdomain: "opencloud"
+opencloud_port: "9200"
+
+opencloud_version: "7.5"
+
+opencloud_dir_data: "{{ opencloud_user_home }}/data"
+opencloud_dir_config: "{{ opencloud_user_home }}/config"

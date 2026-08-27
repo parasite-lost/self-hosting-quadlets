@@ -1,0 +1,31 @@
+---
+- name: Setup mDNS - NetworkManager
+  become: true
+  ansible.builtin.copy:
+    src: enable-mdns.conf
+    dest: /etc/NetworkManager/conf.d/enable-mdns.conf
+    mode: u=r,g=r,o=r
+
+- name: Setup mDNS - systemd-resolved config dropin folder
+  become: true
+  ansible.builtin.file:
+    dest: "/etc/systemd/resolved.conf.d"
+    state: directory
+    mode: u=rwx,g=rx,o=rx
+
+- name: Setup mDNS - systemd-resolved config dropin
+  become: true
+  ansible.builtin.copy:
+    src: 00-mdns.conf
+    dest: /etc/systemd/resolved.conf.d/00-mdns.conf
+    mode: u=r,g=r,o=r
+
+- name: Setup firewall for mdns
+  become: true
+  ansible.posix.firewalld:
+    # firewall-cmd --add-service=mdns --permanent
+    service: mdns
+    permanent: true
+    state: enabled
+    # reload firewall
+    immediate: true

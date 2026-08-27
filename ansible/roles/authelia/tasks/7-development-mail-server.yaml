@@ -1,0 +1,21 @@
+---
+- name: Create development mail server (development only)
+  when: deploy_purpose == 'development'
+  block:
+    - name: Create mailpit container
+      become: true
+      become_user: "{{ authelia_user_name }}"
+      ansible.builtin.template:
+        src: development-mailpit.container.j2
+        dest: "{{ authelia_user_home }}/.config/containers/systemd/mailpit.container"
+        mode: u+rw,g=r,o=
+      notify:
+        - Restart authelia
+
+    - name: Allow mailpit port
+      become: true
+      ansible.posix.firewalld:
+        port: 8025/tcp
+        state: enabled
+        permanent: true
+        immediate: true

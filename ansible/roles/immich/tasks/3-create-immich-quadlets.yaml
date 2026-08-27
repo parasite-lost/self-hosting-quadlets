@@ -1,0 +1,83 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - host_maindomain        is defined
+      - host_time_zone         is defined
+      - immich_user_name       is defined
+      - immich_user_home       is defined
+      - immich_upload_location is defined
+      - immich_version         is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Create immich quadlets
+  become: true
+  become_user: "{{ immich_user_name }}"
+  block:
+    - name: Create postgres data volume
+      ansible.builtin.copy:
+        src: immich-postgres-data.volume
+        dest: "{{ immich_user_home }}/.config/containers/systemd/immich-postgres-data.volume"
+        mode: u=rw,g=r,o=
+
+    - name: Create valkey data volume
+      ansible.builtin.copy:
+        src: immich-valkey-data.volume
+        dest: "{{ immich_user_home }}/.config/containers/systemd/immich-valkey-data.volume"
+        mode: u=rw,g=r,o=
+
+    - name: Create machine learning cache volume
+      ansible.builtin.copy:
+        src: immich-model-cache.volume
+        dest: "{{ immich_user_home }}/.config/containers/systemd/immich-model-cache.volume"
+        mode: u=rw,g=r,o=
+
+    - name: Create postgres container
+      ansible.builtin.template:
+        src: immich-postgres.container.j2
+        dest: "{{ immich_user_home }}/.config/containers/systemd/immich-postgres.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart immich
+
+    - name: Create valkey container
+      ansible.builtin.template:
+        src: immich-valkey.container.j2
+        dest: "{{ immich_user_home }}/.config/containers/systemd/immich-valkey.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart immich
+
+    - name: Create immich server container
+      ansible.builtin.template:
+        src: immich-server.container.j2
+        dest: "{{ immich_server_container }}"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart immich
+
+    - name: Create immich machine-learning container
+      ansible.builtin.template:
+        src: immich-machine-learning.container.j2
+        dest: "{{ immich_user_home }}/.config/containers/systemd/immich-machine-learning.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart immich
+
+    - name: Create immich pod
+      ansible.builtin.template:
+        src: immich.pod.j2
+        dest: "{{ immich_user_home }}/.config/containers/systemd/immich.pod"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart immich
+
+    - name: Enable immich
+      ansible.builtin.systemd_service:
+        unit: "immich-pod.service"
+        scope: user
+        enabled: true
+        daemon_reload: true

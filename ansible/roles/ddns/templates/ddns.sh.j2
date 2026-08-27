@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Docs: https://developers.cloudflare.com/api/operations/dns-records-for-a-zone-update-dns-record
+
+# Get the Zone ID from: https://dash.cloudflare.com/<account_id>/<domain.name>
+ZONE_ID="{{ ddns_zone_id }}"
+
+# Get the existing identifier for DNS entry:
+# https://developers.cloudflare.com/api/operations/dns-records-for-a-zone-list-dns-records
+RECORD_ID="{{ ddns_record_id }}"
+
+# Use API token for authenticate: https://dash.cloudflare.com/profile/api-tokens
+API_TOKEN=$(cat "$CREDENTIALS_DIRECTORY/{{ ddns_credential_api_token_name }}")
+
+# Desired domain name
+DOMAIN_NAME="*.{{ host_maindomain }}"
+
+_JSON_FILE=$HOME/ipv4-cloudflare-ddns-update.json
+
+# Get previous IP address
+_PREV_IP_FILE="$HOME/ipv4-previous.txt"
+if [[ -f $_PREV_IP_FILE ]]; then
+  _PREV_IP=$(cat $_PREV_IP_FILE)
+else
+  _PREV_IP=""
+fi
+
+# Get current IP address
+_IP=$(dig ch txt whoami.cloudflare @1.0.0.1 +short | awk -F'"' '{print $2}')
+
+# Get current time for logging
+_CURRENT_TIME=$(TZ="{{ host_time_zone }}" date +"%Y-%m-%d %H:%M:%S")
+
+# If new/previous IPs match, no need for an update.
+if [ "$_IP" = "$_PREV_IP" ]; then
+    exit 0
+fi
+
+_UPDATE=$(
+    cat <<EOF
+{
+  "content": "$_IP",
+  "name": "$DOMAIN_NAME",
+  "proxied": false,
+  "type": "A",
+  "ttl": 1
+}
+EOF
+)
+
+curl --request PUT \
+    --url https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID \
+    --header 'Content-Type: application/json' \
+    --header "Authorization: Bearer $API_TOKEN" \
+    --data "$_UPDATE" >$_JSON_FILE &&
+    echo "$_IP" > "$_PREV_IP_FILE"
+
+echo "[$_CURRENT_TIME]: IP changed to [$_IP]." >&2

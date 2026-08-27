@@ -1,0 +1,31 @@
+[Unit]
+Description=Authelia Postgres Container
+
+[Container]
+Pod=authelia.pod
+Label=app=authelia
+ContainerName=authelia-postgres
+
+Image=docker.io/library/postgres:18
+#AutoUpdate=registry
+#HealthCmd=pg_isready -d $POSTGRES_DB -U $POSTGRES_USER
+#HealthInterval=30s
+#HealthTimeout=15s
+#HealthRetries=10
+#HealthStartPeriod=15s
+
+# -c listen_addresses='' tells Postgres not to bind to any IP interface
+Exec=-c listen_addresses='' -c unix_socket_permissions=0770
+
+Environment=TZ={{ host_time_zone }}
+Environment=POSTGRES_USER=authelia
+Environment=POSTGRES_DB=authelia
+Environment=POSTGRES_PASSWORD_FILE=/run/credentials/storage-password
+
+# :z required as volume is shared
+Volume=authelia-internal-communication.volume:/var/run/postgresql:z
+Volume=authelia-postgres-data.volume:/var/lib/postgresql
+Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec
+
+[Service]
+Restart=always

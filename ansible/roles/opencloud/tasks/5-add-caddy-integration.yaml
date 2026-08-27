@@ -1,0 +1,28 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - caddy_user_name                 is defined
+      - caddy_pasta_port_map            is defined
+      - caddy_dir_caddyfile_subdomain_d is defined
+      - opencloud_port                  is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Add caddy integration
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Add caddy dropin configuration for opencloud
+      ansible.builtin.template:
+        src: opencloud.caddy.j2
+        dest: "{{ caddy_dir_caddyfile_subdomain_d }}/opencloud.caddy"
+        mode: u=rw,g=r,o=
+      notify: Restart caddy
+
+    - name: Add caddy pasta port mapping # noqa: var-naming
+      ansible.builtin.set_fact:
+        # add '-T,9200' to caddy's pasta parameters
+        caddy_pasta_port_map: "{{ caddy_pasta_port_map | union(['-T,' ~ opencloud_port]) }}"

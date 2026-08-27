@@ -1,0 +1,8 @@
+---
+- name: Pre-checks
+  ansible.builtin.import_playbook: pre-checks.yaml
+
+- name: Setup production
+  hosts: all
+  roles:
+    - caddy_json_config

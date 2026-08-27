@@ -1,0 +1,9 @@
+---
+- name: Create caddy configuration dropin
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  ansible.builtin.template:
+    src: "static.caddy.j2"
+    dest: "{{ caddy_dir_caddyfile_wildcard_d }}/static.caddy"
+    mode: u=rw,g=r,o=
+  notify: Reload caddy

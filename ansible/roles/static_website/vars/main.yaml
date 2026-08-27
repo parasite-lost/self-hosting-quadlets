@@ -1,0 +1,4 @@
+---
+# TODO: move to separate user
+static_website_user_name: "caddy"
+static_website_user_home: "/home/{{ static_website_user_name }}"

@@ -1,0 +1,6 @@
+---
+# mailpit development mail server
+authelia_smtp_address: 'smtp://127.0.0.1:1025'
+authelia_smtp_sender: 'Authelia Develop <authelia@localhost>'
+authelia_smtp_username: '-'
+authelia_smtp_password: '-'

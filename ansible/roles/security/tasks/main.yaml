@@ -1,0 +1,32 @@
+---
+- name: Check if key-based SSH login is available, then disable password-based SSH login
+  block:
+    - name: Check key-based SSH login is available
+      ansible.builtin.command:
+        cmd: >
+          ssh -o BatchMode=yes
+              -o ConnectTimeout=5
+              -o PreferredAuthentications=publickey
+              -o PubkeyAuthentication=yes
+              -o PasswordAuthentication=no
+              {{ hostvars[inventory_hostname]['ansible_user'] }}@{{ hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname) }} "echo OK"
+      delegate_to: localhost
+      register: security_ssh_key_check
+      failed_when: false
+      changed_when: false
+
+    - name: Abort if key-based SSH login failed
+      ansible.builtin.fail:
+        msg: >
+          CRITICAL: Key-based SSH login failed for
+          {{ hostvars[inventory_hostname]['ansible_user'] }}@{{ hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname) }}.
+          Password authentication was NOT disabled to prevent locking you out.
+      when: security_ssh_key_check.rc != 0
+
+    - name: Prevent password-based SSH login
+      when: security_ssh_key_check.rc == 0
+      become: true
+      ansible.builtin.copy:
+        src: "60-no-passwd.conf"
+        dest: "/etc/ssh/sshd_config.d/60-no-passwd.conf"
+        mode: u=r,g=,o=

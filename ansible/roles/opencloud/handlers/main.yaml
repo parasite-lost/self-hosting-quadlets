@@ -1,0 +1,9 @@
+---
+- name: Restart opencloud
+  become: true
+  become_user: "{{ opencloud_user_name }}"
+  ansible.builtin.systemd_service:
+    service: "opencloud-pod.service"
+    state: restarted
+    scope: user
+    daemon_reload: true

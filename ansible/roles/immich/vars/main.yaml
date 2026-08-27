@@ -1,0 +1,14 @@
+---
+immich_server_container_unit: immich-server.container
+immich_server_container: "{{ immich_user_home }}/.config/containers/systemd/{{ immich_server_container_unit }}"
+immich_server_container_d: "{{ immich_server_container }}.d"
+immich_server_container_d_credentials: "{{ immich_server_container_d }}/credentials.conf"
+
+immich_postgres_container_unit: "immich-postgres.container"
+immich_postgres_container: "{{ immich_user_home }}/.config/containers/systemd/{{ immich_postgres_container_unit }}"
+immich_postgres_container_d: "{{ immich_postgres_container }}.d"
+immich_postgres_container_d_credentials: "{{ immich_postgres_container_d }}/credentials.conf"
+
+# can be overridden with --extra-vars '{"immich_refresh_credential": true}'
+immich_refresh_credential: false
+immich_database_password_name: db_password

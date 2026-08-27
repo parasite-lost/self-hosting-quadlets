@@ -1,0 +1,36 @@
+[Unit]
+Description=caddy reverse proxy
+AssertPathIsDirectory={{ caddy_dir_config }}
+AssertPathExists={{ caddy_caddyfile }}
+Requires=caddy.socket
+After=caddy.socket
+
+[Service]
+ExecReload=podman exec caddy /usr/bin/caddy reload --config /etc/caddy/Caddyfile
+
+[Container]
+ContainerName=caddy
+Label=app=caddy
+
+# https://github.com/CaddyBuilds/caddy-cloudflare
+Image={{ caddy_container_image }}
+#AutoUpdate=registry
+Notify=true
+ReadOnly=true
+#HealthCmd=curl http://localhost:2019/metrics || exit 1
+#HealthInterval=30s
+#HealthTimeout=5s
+#HealthRetries=3
+#HealthStartPeriod=10s
+
+Exec=/usr/bin/caddy run --config /etc/caddy/Caddyfile
+
+NoNewPrivileges=true
+
+Volume={{ caddy_dir_config }}:/etc/caddy:ro,Z
+Volume=caddy-config.volume:/config
+Volume=caddy-data.volume:/data
+{{ 'Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec' if _caddy_has_credentials }}
+
+[Install]
+WantedBy=default.target

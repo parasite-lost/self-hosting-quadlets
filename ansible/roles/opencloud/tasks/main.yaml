@@ -1,0 +1,20 @@
+---
+- name: Setup opencloud service
+  block:
+    - name: Check variables
+      ansible.builtin.import_tasks: 0-validate-opencloud-variables.yaml
+
+    - name: Create opencloud user
+      ansible.builtin.import_tasks: 1-create-opencloud-user.yaml
+
+    - name: Add data location
+      ansible.builtin.import_tasks: 2-add-data-location.yaml
+
+    - name: Add configuration
+      ansible.builtin.import_tasks: 3-add-config.yaml
+
+    - name: Create quadlets
+      ansible.builtin.import_tasks: 4-create-quadlets.yaml
+
+    - name: Add caddy integration
+      ansible.builtin.import_tasks: 5-add-caddy-integration.yaml

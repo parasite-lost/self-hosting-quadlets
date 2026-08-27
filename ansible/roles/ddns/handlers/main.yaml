@@ -1,0 +1,9 @@
+---
+- name: Restart ddns timer
+  become: true
+  become_user: "{{ ddns_user_name }}"
+  ansible.builtin.systemd_service:
+    service: ddns.timer
+    state: restarted
+    scope: user
+    daemon_reload: true

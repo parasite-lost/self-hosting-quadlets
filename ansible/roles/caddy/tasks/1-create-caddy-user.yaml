@@ -1,0 +1,19 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - caddy_user_name is defined
+      - caddy_user_home is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Create caddy user
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: create-service-user.yaml
+  tags: always
+  vars:
+    common_user_name: "{{ caddy_user_name }}"
+    common_user_home: "{{ caddy_user_home }}"

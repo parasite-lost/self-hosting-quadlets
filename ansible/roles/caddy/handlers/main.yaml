@@ -1,0 +1,28 @@
+---
+- name: Restart caddy
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  ansible.builtin.systemd_service:
+    service: "{{ caddy_service_unit }}"
+    state: restarted
+    scope: user
+    daemon_reload: true
+  changed_when: true
+
+- name: Reload caddy
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  ansible.builtin.systemd_service:
+    service: "{{ caddy_service_unit }}"
+    state: reloaded
+    scope: user
+  changed_when: true
+
+- name: Enable caddy
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  ansible.builtin.systemd_service:
+    unit: "{{ caddy_service_unit }}"
+    enabled: true
+    scope: user
+    daemon_reload: true

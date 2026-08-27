@@ -1,0 +1,55 @@
+---
+- name: Create ddns systemd service
+  become: true
+  become_user: "{{ ddns_user_name }}"
+  block:
+    - name: Add systemd service
+      ansible.builtin.copy:
+        src: ddns.service
+        dest: "{{ ddns_user_service }}"
+        mode: u=r,g=r,o=
+      notify: Restart ddns timer
+
+    - name: Add systemd service dropin folder
+      ansible.builtin.file:
+        path: "{{ ddns_user_service_d }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Check credential dropin exists
+      ansible.builtin.stat:
+        path: "{{ ddns_user_service_d_credential }}"
+      register: ddns_credential_dropin
+
+    - name: Create credential
+      when: ddns_refresh_credential or not ddns_credential_dropin.stat.exists
+      block:
+        - name: Generate credential api token
+          ansible.builtin.command:
+            cmd: "systemd-creds encrypt --user --pretty --name={{ ddns_credential_api_token_name }} - -"
+            stdin: "{{ ddns_api_token }}"
+          register: ddns_credential_api_token
+          changed_when: false
+
+        - name: Add systemd service credential dropin
+          ansible.builtin.copy:
+            dest: "{{ ddns_user_service_d_credential }}"
+            content: |
+              [Service]
+              {{ ddns_credential_api_token.stdout }}
+            mode: u=rw,g=r,o=
+          notify: Restart ddns timer
+
+    - name: Add systemd timer
+      ansible.builtin.copy:
+        src: ddns.timer
+        dest: "{{ ddns_user_home }}/.config/systemd/user/ddns.timer"
+        mode: u=r,g=r,o=
+      notify: Restart ddns timer
+
+    - name: Enable ddns timer
+      ansible.builtin.systemd_service:
+        name: ddns.timer
+        enabled: true
+        scope: user
+        daemon_reload: true

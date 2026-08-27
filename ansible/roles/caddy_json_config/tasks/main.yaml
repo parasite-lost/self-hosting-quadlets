@@ -1,0 +1,9 @@
+---
+- name: Caddy json config rendering (including render routine validation)
+  block:
+    - name: Test rendering
+      ansible.builtin.import_tasks: 0-validate-rendering.yaml
+      run_once: true
+      tags:
+        - never
+        - validate

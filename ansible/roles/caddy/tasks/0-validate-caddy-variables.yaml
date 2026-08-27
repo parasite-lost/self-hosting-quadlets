@@ -1,0 +1,23 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - caddy_user_name       is defined
+      - caddy_user_home       is defined
+      - caddy_dns_provider    is in _caddy_supported_dns_provider
+      - caddy_container_image is defined
+      - host_maindomain       is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - caddy_cloudflare_acme_api_token is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  when: caddy_dns_provider == "cloudflare"
+  tags:
+    - validate

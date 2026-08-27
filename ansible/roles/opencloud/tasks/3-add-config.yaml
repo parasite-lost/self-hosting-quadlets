@@ -1,0 +1,25 @@
+---
+
+- name: Add opencloud config
+  become: true
+  become_user: "{{ opencloud_user_name }}"
+  block:
+    - name: Add config folder
+      ansible.builtin.file:
+        path: "{{ opencloud_dir_config }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Add proxy configuration
+      ansible.builtin.copy:
+        src: "proxy.yaml"
+        dest: "{{ opencloud_dir_config }}/proxy.yaml"
+        mode: u=rw,g=r,o=
+        force: false
+
+    - name: Add csp configuration
+      ansible.builtin.template:
+        src: "csp.yaml.j2"
+        dest: "{{ opencloud_dir_config }}/csp.yaml"
+        mode: u=rw,g=r,o=
+        force: false

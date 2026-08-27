@@ -1,0 +1,8 @@
+[Unit]
+Description=Update ddns records
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/ddns.sh
+PrivateTmp=yes
+ProtectSystem=strict

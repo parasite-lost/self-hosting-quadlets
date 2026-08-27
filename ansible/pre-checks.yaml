@@ -1,0 +1,18 @@
+---
+- name: Pre-checks
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: "Pre-check: -l / --limit commandline flag is present"
+      ansible.builtin.fail:
+        msg: "FAIL: You must specify a target host / group using `-l` or `--limit`"
+      when: ansible_limit is not defined
+
+    - name: "Pre-check: deploy_purpose = production|development"
+      ansible.builtin.fail:
+        msg: "FAIL: You must specify deploy_purpose as 'production' or 'development'"
+      when: deploy_purpose != production and deploy_purpose != development
+
+    - name: Pre-check complete
+      ansible.builtin.debug:
+        msg: "Pre-check complete"

@@ -1,0 +1,212 @@
+{% macro route_match_host(subdomain, maindomain) %}
+"match": [
+  {
+    "host": [
+      "{{ subdomain }}.{{ maindomain }}"
+    ]
+  }
+]
+{% endmacro %}
+
+{% macro set_global_headers() %}
+{
+  "handler": "headers",
+  "response": {
+    "deferred": true,
+    "set": {
+      "X-Robots-Tag": [
+        "noindex,nofollow"
+      ]
+    }
+  }
+}
+{% endmacro %}
+
+{% macro encode() %}
+{
+  "handler": "encode",
+  "encodings": {
+    "gzip": {},
+    "zstd": {}
+  },
+  "prefer": [
+    "zstd",
+    "gzip"
+  ]
+}
+{% endmacro %}
+
+{% macro forward_auth(auth_service_port) %}
+{
+  "handle_response": [
+    {
+      "match": {
+        "status_code": [
+          2
+        ]
+      },
+      "routes": [
+        {
+          "handle": [
+            {
+              "handler": "vars"
+            }
+          ]
+        },
+        {
+          "handle": [
+            {
+              "handler": "headers",
+              "request": {
+                "set": {
+                  "Remote-Email": [
+                    "{http.reverse_proxy.header.Remote-Email}"
+                  ]
+                }
+              }
+            }
+          ],
+          "match": [
+            {
+              "not": [
+                {
+                  "vars": {
+                    "{http.reverse_proxy.header.Remote-Email}": [
+                      ""
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "handle": [
+            {
+              "handler": "headers",
+              "request": {
+                "set": {
+                  "Remote-Groups": [
+                    "{http.reverse_proxy.header.Remote-Groups}"
+                  ]
+                }
+              }
+            }
+          ],
+          "match": [
+            {
+              "not": [
+                {
+                  "vars": {
+                    "{http.reverse_proxy.header.Remote-Groups}": [
+                      ""
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "handle": [
+            {
+              "handler": "headers",
+              "request": {
+                "set": {
+                  "Remote-Name": [
+                    "{http.reverse_proxy.header.Remote-Name}"
+                  ]
+                }
+              }
+            }
+          ],
+          "match": [
+            {
+              "not": [
+                {
+                  "vars": {
+                    "{http.reverse_proxy.header.Remote-Name}": [
+                      ""
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "handle": [
+            {
+              "handler": "headers",
+              "request": {
+                "set": {
+                  "Remote-User": [
+                    "{http.reverse_proxy.header.Remote-User}"
+                  ]
+                }
+              }
+            }
+          ],
+          "match": [
+            {
+              "not": [
+                {
+                  "vars": {
+                    "{http.reverse_proxy.header.Remote-User}": [
+                      ""
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "handler": "reverse_proxy",
+  "headers": {
+    "request": {
+      "set": {
+        "X-Forwarded-Method": [
+          "{http.request.method}"
+        ],
+        "X-Forwarded-Uri": [
+          "{http.request.uri}"
+        ]
+      }
+    }
+  },
+  "rewrite": {
+    "method": "GET",
+    "uri": "/api/authz/forward-auth"
+  },
+  "upstreams": [
+    {
+      "dial": "127.0.0.1:{{ auth_service_port }}"
+    }
+  ]
+}
+{% endmacro %}
+
+{% macro match_missing_mtls_certificate() %}
+"match": [
+  {
+    "expression": {
+      "expr": "{http.request.tls.client.subject} == \"\"",
+      "name": "missing_mtls_certificate"
+    }
+  }
+]
+{% endmacro %}
+
+{% macro reverse_proxy(port) %}
+{
+  "handler": "reverse_proxy",
+  "upstreams": [
+    {
+      "dial": "127.0.0.1:{{ port }}"
+    }
+  ]
+}
+{% endmacro %}

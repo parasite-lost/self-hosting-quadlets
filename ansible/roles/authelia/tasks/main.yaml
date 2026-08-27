@@ -1,0 +1,26 @@
+---
+- name: Setup authelia authenticaion service
+  block:
+    - name: Check variables
+      ansible.builtin.import_tasks: 0-validate-authelia-variables.yaml
+
+    - name: Create authelia user
+      ansible.builtin.import_tasks: 1-create-authelia-user.yaml
+
+    - name: Create authelia configuration
+      ansible.builtin.import_tasks: 2-create-authelia-config.yaml
+
+    - name: Add authelia user database
+      ansible.builtin.import_tasks: 3-add-user-db.yaml
+
+    - name: Create quadlets
+      ansible.builtin.import_tasks: 4-create-quadlets.yaml
+
+    - name: Create credentials
+      ansible.builtin.import_tasks: 5-create-credentials.yaml
+
+    - name: Add caddy integration
+      ansible.builtin.import_tasks: 6-add-caddy-integration.yaml
+
+    - name: Add development mail server (development only)
+      ansible.builtin.import_tasks: 7-development-mail-server.yaml

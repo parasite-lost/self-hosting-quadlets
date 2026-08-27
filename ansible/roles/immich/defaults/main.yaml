@@ -1,0 +1,6 @@
+---
+immich_user_name: "immich"
+immich_user_home: "/home/{{ immich_user_name }}"
+immich_upload_location: "{{ immich_user_home }}/data"
+
+immich_version: "v3"

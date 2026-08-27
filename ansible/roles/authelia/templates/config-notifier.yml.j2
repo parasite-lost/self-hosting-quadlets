@@ -1,0 +1,11 @@
+# SMTP Notifier https://www.authelia.com/configuration/notifications/smtp/
+# Set also AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE
+notifier:
+  template_path: /config/email_templates
+  smtp:
+    subject: "[{{ host_maindomain }}] {title}"
+    address: "{{ authelia_smtp_address }}"
+    sender: "{{ authelia_smtp_sender }}"
+    username: "{{ authelia_smtp_username }}"
+    # password: set via AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE
+    disable_require_tls: {{ 'true' if deploy_purpose == 'development' else 'false' }}

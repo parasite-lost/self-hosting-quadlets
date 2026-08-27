@@ -1,0 +1,283 @@
+---
+- name: Test caddy json config rendering locally
+  delegate_to: localhost
+  vars:
+    caddy_json_config_web_services: []
+    caddy_json_config_acme_provider: "cloudflare"
+    caddy_json_config_maindomain: "example.com"
+    test_file_names:
+      - test-naked-0
+      - test-naked-1
+      - test-naked-2
+      - test-forward-auth-1
+      - test-forward-auth-2
+      - test-mtls-forward-auth-1
+      - test-mtls-forward-auth-2
+      - test-mtls-forward-auth-3
+      - test-mtls-public-1
+      - test-mtls-public-2
+      - test-mtls-public-3
+  block:
+    - name: Validate test Caddyfiles
+      ansible.builtin.command:
+        cmd: >-
+          bash
+          {{ role_path }}/scripts/validate-caddy-config.sh
+          {{ role_path }}/tests/caddyfiles/Caddyfile-{{ item }}
+      changed_when: false
+      loop: "{{ test_file_names }}"
+
+    - name: Convert Caddyfiles to json and add remote_ip matcher to mTLS settings
+      block:
+        - name: Adapt Caddyfiles
+          ansible.builtin.command:
+            cmd: >-
+              bash
+              {{ role_path }}/scripts/caddy-to-json.sh
+              {{ role_path }}/tests/caddyfiles/Caddyfile-{{ item }}
+          changed_when: false
+          register: caddy_json_config_adapted_files
+          loop: "{{ test_file_names }}"
+
+        - name: Add remote_ip matcher to adapted Caddyfiles
+          ansible.builtin.command:
+            cmd: python "{{ role_path }}/scripts/add-remote-ip-matcher.py"
+            stdin: "{{ item.stdout }}"
+          changed_when: false
+          loop: "{{ caddy_json_config_adapted_files.results }}"
+          loop_control:
+            label: "{{ item.item }}"
+          register: caddy_json_config_adapted_and_adjusted_files
+          diff: false
+
+        - name: Write adapted json Caddyfiles
+          ansible.builtin.copy:
+            content: "{{ item.stdout }}"
+            dest: "{{ role_path }}/tests/results/caddy-{{ item.item.item }}-adapted.json"
+            mode: u=rw,g=r,o=
+          loop: "{{ caddy_json_config_adapted_and_adjusted_files.results }}"
+          loop_control:
+            label: "{{ item.item.item }}"
+          diff: false
+
+    - name: Render caddy json config 'test-naked-0'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-naked-0-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create a1-naked config
+      create_web_service_config_spec:
+        subdomain: "a1-naked"
+        port: 9091
+        auth: false
+        mtls: "none"
+      register: caddy_json_config_a1
+
+    - name: Add authelia config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_a1.spec] }}"
+
+    - name: Render caddy json config 'test-naked-1'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-naked-1-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create a2-naked config
+      create_web_service_config_spec:
+        subdomain: "a2-naked"
+        port: 8080
+        auth: false
+        mtls: "none"
+      register: caddy_json_config_a2
+
+    - name: Add a2-naked config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_a2.spec] }}"
+
+    - name: Render caddy json config 'test-naked-2'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-naked-2-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create b1-forward-auth service config
+      create_web_service_config_spec:
+        subdomain: "b1-forward-auth"
+        port: 1111
+        auth: true
+        mtls: 'none'
+      register: caddy_json_config_b1
+
+    - name: Add b1-forward-auth config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_b1.spec] }}"
+
+    - name: Render caddy json config 'test-forward-auth-1'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-forward-auth-1-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create b2-forward-auth service config
+      create_web_service_config_spec:
+        subdomain: "b2-forward-auth"
+        port: 1112
+        auth: true
+        mtls: 'none'
+      register: caddy_json_config_b2
+
+    - name: Add b2-forward-auth config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_b2.spec] }}"
+
+    - name: Render caddy json config 'test-forward-auth-2'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-forward-auth-2-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create c1-mtls-forward-auth-fallback service config
+      create_web_service_config_spec:
+        subdomain: "c1-mtls-forward-auth-fallback"
+        port: 2221
+        auth: true
+        mtls: "optional"
+        mtls_cert: "root@common.example.com.pem"
+      register: caddy_json_config_c1
+
+    - name: Add c1-mtls-forward-auth-fallback config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_c1.spec] }}"
+
+    - name: Render caddy json config 'test-mtls-forward-auth-1'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-mtls-forward-auth-1-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create c2-mtls-forward-auth-fallback service config
+      create_web_service_config_spec:
+        subdomain: "c2-mtls-forward-auth-fallback"
+        port: 2222
+        auth: true
+        mtls: "optional"
+        mtls_cert: "root@common.example.com.pem"
+      register: caddy_json_config_c2
+
+    - name: Add c2-mtls-forward-auth-fallback config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_c2.spec] }}"
+
+    - name: Render caddy json config 'test-mtls-forward-auth-2'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-mtls-forward-auth-2-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create c3-mtls-forward-auth-fallback service config
+      create_web_service_config_spec:
+        subdomain: "c3-mtls-forward-auth-fallback"
+        port: 2223
+        auth: true
+        mtls: "optional"
+        mtls_cert: "root@owner.example.com.pem"
+      register: caddy_json_config_c3
+
+    - name: Add c3-mtls-forward-auth-fallback config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_c3.spec] }}"
+
+    - name: Render caddy json config 'test-mtls-forward-auth-3'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-mtls-forward-auth-3-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create d1-mtls-public service config
+      create_web_service_config_spec:
+        subdomain: "d1-mtls-public"
+        port: 3331
+        auth: false
+        mtls: "required"
+        mtls_cert: "root@common.example.com.pem"
+      register: caddy_json_config_d1
+
+    - name: Add d1-mtls-public config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_d1.spec] }}"
+
+    - name: Render caddy json config 'test-mtls-public-1'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-mtls-public-1-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create d2-mtls-public service config
+      create_web_service_config_spec:
+        subdomain: "d2-mtls-public"
+        port: 3332
+        auth: false
+        mtls: "required"
+        mtls_cert: "root@common.example.com.pem"
+      register: caddy_json_config_d2
+
+    - name: Add d2-mtls-public config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_d2.spec] }}"
+
+    - name: Render caddy json config 'test-mtls-public-2'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-mtls-public-2-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Create d3-mtls-public service config
+      create_web_service_config_spec:
+        subdomain: "d3-mtls-public"
+        port: 3333
+        auth: false
+        mtls: "required"
+        mtls_cert: "root@owner.example.com.pem"
+      register: caddy_json_config_d3
+
+    - name: Add d3-mtls-public config
+      ansible.builtin.set_fact:
+        caddy_json_config_web_services: "{{ caddy_json_config_web_services + [caddy_json_config_d3.spec] }}"
+
+    - name: Render caddy json config 'test-mtls-public-3'
+      ansible.builtin.template:
+        src: caddy-config.json.j2
+        dest: "{{ role_path }}/tests/results/caddy-test-mtls-public-3-rendered.json"
+        mode: u=rw,g=r,o=
+      diff: false
+
+    - name: Validate rendered json configurations
+      ansible.builtin.command:
+        cmd: >-
+          bash
+          {{ role_path }}/scripts/validate-caddy-config.sh
+          {{ role_path }}/tests/results/caddy-{{ item }}-rendered.json
+      changed_when: false
+      loop: "{{ test_file_names }}"
+
+    - name: Validate rendering of all json config files
+      ansible.builtin.command:
+        cmd: >-
+          bash
+          {{ role_path }}/scripts/json-diff.sh
+          {{ role_path }}/tests/results/caddy-{{ item }}-rendered.json
+          {{ role_path }}/tests/results/caddy-{{ item }}-adapted.json
+      changed_when: false
+      loop: "{{ test_file_names }}"

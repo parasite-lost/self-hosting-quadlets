@@ -1,0 +1,16 @@
+---
+- name: Create user bin folder
+  become: true
+  become_user: "{{ ddns_user_name }}"
+  ansible.builtin.file:
+    path: "{{ ddns_user_home }}/.local/bin"
+    state: directory
+    mode: u=rwx,g=rx,o=
+
+- name: Add service executable
+  become: true
+  become_user: "{{ ddns_user_name }}"
+  ansible.builtin.template:
+    src: "ddns.sh.j2"
+    dest: "{{ ddns_user_home }}/.local/bin/ddns.sh"
+    mode: u=rx,g=r,o=

@@ -1,0 +1,25 @@
+[Unit]
+Description=Immich Server
+After=immich-postgres.service immich-valkey.service immich-machine-learning.service
+After=immich.pod
+
+[Container]
+Pod=immich.pod
+Label=app=immich
+ContainerName=immich-server
+Image=ghcr.io/immich-app/immich-server:{{ immich_version }}
+
+Volume={{ immich_upload_location }}:/data:Z
+Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec
+
+Environment=TZ={{ host_time_zone }}
+Environment=DB_DATABASE_NAME=immich
+Environment=DB_USERNAME=postgres
+Environment=DB_PASSWORD_FILE=/run/credentials/{{ immich_database_password_name }}
+Environment=DB_HOSTNAME=localhost
+Environment=REDIS_HOSTNAME=localhost
+{{ '# localhost testing: accept self-signed certificates' if deploy_purpose == 'development' }}
+{{ 'Environment=NODE_TLS_REJECT_UNAUTHORIZED=0' if deploy_purpose == 'development'}}
+
+[Service]
+Restart=always

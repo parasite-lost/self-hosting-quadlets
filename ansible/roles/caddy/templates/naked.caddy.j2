@@ -1,0 +1,10 @@
+(reverse_proxy_naked) {
+	# reverse_proxy (no mTLS, no authentication)
+	# args[0]: subdomain
+	# args[1]: proxy port
+	{args[0]}.{{ host_maindomain }} {
+		import default_site_settings
+
+		reverse_proxy 127.0.0.1:{args[1]}
+	}
+}

@@ -1,0 +1,14 @@
+[Unit]
+Description=Sockets for caddy reverse proxy
+
+[Socket]
+BindIPv6Only=both
+# HTTP: fd/3
+ListenStream=[::]:80
+# HTTPS: fd/4
+ListenStream=[::]:443
+# HTTP3: fdgram/5
+ListenDatagram=[::]:443
+
+[Install]
+WantedBy=sockets.target

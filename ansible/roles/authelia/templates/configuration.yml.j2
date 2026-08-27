@@ -1,0 +1,50 @@
+server:
+  address: 'fd://3'
+  asset_path: '/config/assets/'
+  disable_healthcheck: false
+  endpoints:
+    authz:
+      forward-auth:
+        implementation: 'ForwardAuth'
+
+# Second Factor https://www.authelia.com/configuration/second-factor/introduction/
+totp:
+  issuer: {{ host_maindomain }}
+
+# Session https://www.authelia.com/configuration/session/introduction/
+# Set also AUTHELIA_SESSION_SECRET_FILE
+session:
+  # secret: set via AUTHELIA_SESSION_SECRET_FILE
+  name: 'authelia_session'
+  same_site: 'lax'
+  inactivity: '1h'
+  expiration: '48h'
+  remember_me: '1y'
+  cookies:
+    - domain: '{{ host_maindomain }}'
+      authelia_url: 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
+      default_redirection_url: 'https://{{ static_website_subdomain }}.{{ host_maindomain }}'
+      name: 'authelia_session'
+      same_site: 'lax'
+      inactivity: '1h'
+      expiration: '48h'
+      remember_me: '1y'
+  # https://www.authelia.com/configuration/session/redis/
+  # Set also AUTHELIA_SESSION_REDIS_PASSWORD_FILE if wanted
+  redis:
+    host: '/var/sockets/valkey.sock'
+    timeout: '5s'
+    max_retries: 0
+
+# Storage https://www.authelia.com/configuration/storage/postgres/
+# Set also AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE
+# Set also AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE
+storage:
+  # encryption_key: set via AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE
+  postgres:
+    address: 'unix:///var/sockets/.s.PGSQL.5432'
+    database: 'authelia'
+    schema: 'public'
+    username: 'authelia'
+    # password: set via AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE
+    timeout: '5s'

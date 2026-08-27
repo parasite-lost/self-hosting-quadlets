@@ -1,0 +1,6 @@
+---
+# avoid '[WARNING]: Module invocation had junk after the JSON data:'
+ansible_ssh_common_args: '-o "SetEnv TERM=dumb"'
+# local data
+local_user: "{{ lookup('env', 'USER') }}"
+local_home: "{{ lookup('env', 'HOME') }}"

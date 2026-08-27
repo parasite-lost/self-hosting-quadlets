@@ -1,0 +1,8 @@
+{{ static_website_subdomain }}.{{ host_maindomain }} {
+	import authelia_guard
+
+	rewrite / /index.html
+
+	root /www
+	file_server browse
+}

@@ -1,0 +1,9 @@
+[Unit]
+Description=Authelia listen port
+
+[Socket]
+ListenStream=127.0.0.1:{{ authelia_port }}
+Service=authelia-app.service
+
+[Install]
+WantedBy=sockets.target

@@ -1,0 +1,17 @@
+---
+- name: Setup immich service
+  block:
+    - name: Create immich user
+      ansible.builtin.import_tasks: 1-create-immich-user.yaml
+
+    - name: Create immich upload location
+      ansible.builtin.import_tasks: 2-add-upload-location.yaml
+
+    - name: Create immich quadlets
+      ansible.builtin.import_tasks: 3-create-immich-quadlets.yaml
+
+    - name: Create immich credentials
+      ansible.builtin.import_tasks: 4-create-immich-credentials.yaml
+
+    - name: Add caddy integration
+      ansible.builtin.import_tasks: 5-add-caddy-integration.yaml

@@ -1,0 +1,55 @@
+{% filter from_json | to_nice_json(indent=2) %}
+{% from 'macros/caddy-config-tls-connection-policies.j2' import caddy_config_tls_connection_policies %}
+{% from 'macros/caddy-config-tls.j2' import caddy_config_tls %}
+{% from 'macros/caddy-config-routes.j2' import caddy_config_routes %}
+{
+  "apps": {
+    "http": {
+      "servers": {
+        "srv0": {
+          "listen": [
+            "fd/3"
+          ],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "static_response",
+                  "headers": {
+                    "Location": [
+                      "https://{http.request.host}{http.request.uri}"
+                    ]
+                  },
+                  "status_code": 301
+                }
+              ]
+            }
+          ],
+          "listen_protocols": [
+            [
+              "h1"
+            ]
+          ]
+        },
+        "srv1": {
+          "listen": [
+            "fd/4",
+            "fdgram/5"
+          ],
+          {% set mtls_guarded_services = caddy_json_config_web_services | selectattr('mtls', 'ne', 'none') | list %}
+          {% if mtls_guarded_services | length > 0 %}
+          {{ caddy_config_tls_connection_policies(caddy_json_config_web_services, caddy_json_config_maindomain) }},
+          {% endif %}
+          {{ caddy_config_routes(caddy_json_config_web_services, caddy_json_config_maindomain, caddy_json_config_auth_service_port) }},
+          "listen_protocols": [
+            ["h1", "h2"], {# for fd/4 / port 443/tcp (HTTPS) #}
+            ["h3"] {# for fdgram/5 / port 443/udp (QUIC) #}
+          ]
+        },
+        "srv2": {}
+      }
+    },
+    {{ caddy_config_tls(caddy_json_config_acme_provider, caddy_json_config_credential_acme_api_token_name) }}
+  }
+}
+{% endfilter %}

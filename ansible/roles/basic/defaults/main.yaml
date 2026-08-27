@@ -1,0 +1,10 @@
+---
+basic_admin_packages:
+  - zsh
+  - tmux
+  - fzf
+  - vim
+  - ripgrep
+  - fd-find
+  - bat
+  - hexyl

@@ -1,0 +1,40 @@
+{% from 'macros/caddy-config-common-macros.j2' import
+   route_match_host,
+   encode,
+   set_global_headers,
+   forward_auth,
+   match_missing_mtls_certificate,
+   reverse_proxy
+%}
+
+{% macro route_mtls_forward_auth_fallback(service, maindomain, auth_service_port) %}
+{
+  {{ route_match_host(service.subdomain, maindomain) }},
+  "handle": [
+    {
+      "handler": "subroute",
+      "routes": [
+        {
+          "handle": [
+            {{ set_global_headers() }}
+          ]
+        },
+        {
+          {{ match_missing_mtls_certificate() }},
+          "handle": [
+            {{ forward_auth(auth_service_port) }}
+          ]
+        },
+        {
+          {# mtls certificate present or forward_auth successful #}
+          "handle": [
+            {{ encode() }},
+            {{ reverse_proxy(service.port) }}
+          ]
+        }
+      ]
+    }
+  ],
+  "terminal": true
+}
+{% endmacro %}

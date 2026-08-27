@@ -1,0 +1,7 @@
+---
+- name: Debug
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Debug variables
+      ansible.builtin.import_tasks: tasks/debug-variables.yaml

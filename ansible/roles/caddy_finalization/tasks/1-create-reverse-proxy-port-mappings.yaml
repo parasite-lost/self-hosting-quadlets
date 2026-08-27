@@ -1,0 +1,12 @@
+---
+- name: Write caddy port mappings
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  ansible.builtin.copy:
+    dest: "{{ caddy_port_mapping_dropin }}"
+    content: |
+      [Container]
+      # map exposed backend ports into caddy container
+      PodmanArgs=--network=pasta:{{ caddy_pasta_port_map | sort | join(',') }}
+    mode: u=rw,g=r,o=
+  notify: Restart caddy

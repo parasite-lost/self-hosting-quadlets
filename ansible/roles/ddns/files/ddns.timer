@@ -1,0 +1,9 @@
+[Unit]
+Description=Run ddns.service every 5 minutes
+
+[Timer]
+OnBootSec=20s
+OnCalendar=*:0/5
+
+[Install]
+WantedBy=timers.target
