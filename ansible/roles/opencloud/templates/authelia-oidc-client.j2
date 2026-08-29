@@ -1,0 +1,18 @@
+- client_id: 'opencloud-web-id'
+  client_name: '{{ opencloud_subdomain }}.{{ host_maindomain }}'
+  public: true
+  authorization_policy: 'two_factor'
+  require_pkce: true
+  redirect_uris:
+    - 'https://{{ opencloud_subdomain }}.{{ host_maindomain }}/'
+    - 'https://{{ opencloud_subdomain }}.{{ host_maindomain }}/oidc-callback.html'
+    - 'https://{{ opencloud_subdomain }}.{{ host_maindomain }}/oidc-silent-redirect.html'
+  scopes:
+    - 'openid'
+    - 'profile'
+    - 'email'
+    - 'groups'
+  consent_mode: 'pre-configured'
+  pre_configured_consent_duration: '1 year'
+  userinfo_signed_response_alg: 'RS256'
+  access_token_signed_response_alg: 'RS256'

@@ -1,0 +1,6 @@
+# Security https://www.authelia.com/configuration/security/access-control/
+access_control:
+  default_policy: 'deny'
+
+  rules:
+    {{ _authelia_access_control_rules | join('\n') | indent(4) -}}

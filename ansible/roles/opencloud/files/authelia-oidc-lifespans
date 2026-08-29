@@ -1,0 +1,3 @@
+opencloud:
+  access_token: '60m'
+  refresh_token: '90m'

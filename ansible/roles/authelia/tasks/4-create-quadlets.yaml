@@ -33,7 +33,7 @@
         dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia-valkey.container"
         mode: u=rw,g=r,o=
       notify:
-        - Restart authelia
+        - Schedule authelia restart
 
     - name: Create postgres data volume
       ansible.builtin.copy:
@@ -47,7 +47,7 @@
         dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia-postgres.container"
         mode: u=rw,g=r,o=
       notify:
-        - Restart authelia
+        - Schedule authelia restart
 
     - name: Create authelia app socket
       ansible.builtin.template:
@@ -61,7 +61,7 @@
         dest: "{{ authelia_app_container }}"
         mode: u=rw,g=r,o=
       notify:
-        - Restart authelia
+        - Schedule authelia restart
 
     - name: Create authelia pod
       ansible.builtin.template:
@@ -69,11 +69,4 @@
         dest: "{{ authelia_user_home }}/.config/containers/systemd/authelia.pod"
         mode: u=rw,g=r,o=
       notify:
-        - Restart authelia
-
-    - name: Enable authelia
-      ansible.builtin.systemd_service:
-        unit: "authelia-pod.service"
-        scope: user
-        enabled: true
-        daemon_reload: true
+        - Schedule authelia restart

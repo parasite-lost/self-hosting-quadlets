@@ -23,7 +23,7 @@ session:
   cookies:
     - domain: '{{ host_maindomain }}'
       authelia_url: 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
-      default_redirection_url: 'https://{{ static_website_subdomain }}.{{ host_maindomain }}'
+      default_redirection_url: '{{ authelia_default_redirection_url }}'
       name: 'authelia_session'
       same_site: 'lax'
       inactivity: '1h'

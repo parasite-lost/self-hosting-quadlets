@@ -29,6 +29,8 @@ and mounted into the container securely:
   - used for `identity_providers.oidc.jwks.key`
   - `podman run --rm -u "$(id -u):$(id -g)" -v "$(pwd)":/keys:rw,z authelia/authelia:latest authelia crypto pair rsa generate --directory /keys --file.private-key my-private-key.pem --file.public-key my-public-key.pem`
 * `authelia_user_database`: path to file-based user database
+* `authelia_default_redirection_url`: where to redirect by default after
+  successful login, e.g. `https://www.{{ host_maindomain }}`
 
 ## User Database
 

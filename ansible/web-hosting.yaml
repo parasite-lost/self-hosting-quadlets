@@ -12,6 +12,10 @@
     - opencloud
 
   post_tasks:
+    - name: Finalize authelia setup
+      ansible.builtin.include_role:
+        name: authelia_finalization
+      tags: always
     - name: Finalize caddy setup
       ansible.builtin.include_role:
         name: caddy_finalization

@@ -1,0 +1,43 @@
+#jinja2: trim_blocks: True
+# First Factor https://www.authelia.com/configuration/first-factor/file/
+authentication_backend:
+  file:
+    path: /config/user_database.yml
+    # https://www.authelia.com/reference/guides/attributes/
+    extra_attributes:
+      {{ _authelia_extra_attributes | map('trim') | join('\n') | indent(6) }}
+  password_reset:
+    disable: true
+  password_change:
+    disable: false
+
+identity_providers:
+  oidc:
+    ## See: https://www.authelia.com/c/oidc
+    # hmac_secret: set via AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE
+    jwks:
+      - key: {{ '{{' }} secret "/run/credentials/{{ authelia_oidc_jwk_key_name }}" | mindent 10 "|" | msquote {{ '}}' }}
+
+    claims_policies:
+      {{ _authelia_oidc_policies | map('trim') | join('\n') | indent(6) }}
+
+    scopes:
+      {{ _authelia_oidc_scopes | map('trim') | join('\n') | indent(6) }}
+
+    lifespans:
+      custom:
+        {{ _authelia_oidc_lifespans_custom | map('trim') | join('\n') | indent(8) }}
+
+    # enable global CORS for OIDC endpoints
+    cors:
+      endpoints:
+        - 'authorization'
+        - 'token'
+        - 'revocation'
+        - 'introspection'
+        - 'userinfo'
+      allowed_origins:
+        {{ _authelia_oidc_cors_allowed_origins | map('trim') | join('\n') | indent(8) }}
+
+    clients:
+      {{ _authelia_oidc_clients | map('trim') | join('\n\n') | indent(6) }}

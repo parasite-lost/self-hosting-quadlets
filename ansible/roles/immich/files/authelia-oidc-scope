@@ -1,0 +1,4 @@
+immich_scope:
+  claims:
+    - 'immich_quota'
+    - 'immich_role'

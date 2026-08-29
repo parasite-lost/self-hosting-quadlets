@@ -1,0 +1,7 @@
+---
+- name: Add authelia access control rule # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_access_control_rules: "{{
+      _authelia_access_control_rules +
+      [lookup('ansible.builtin.template', 'authelia-service-access-rule.j2')]
+      }}"
