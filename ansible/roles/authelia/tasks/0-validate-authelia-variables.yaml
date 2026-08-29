@@ -19,19 +19,7 @@
       - authelia_oidc_hmac_secret          is defined
       - authelia_oidc_jwk_key_file         is defined
       - authelia_oidc_jwk_key_file         is file
-    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
-    quiet: true
-  tags:
-    - validate
-
-- name: TO BE MOVED - Validate service variables are defined
-  ansible.builtin.assert:
-    that:
-      - immich_subdomain           is defined
-      - immich_client_secret_hash  is defined
-      - immich_client_secret_plain is defined
-      - static_website_subdomain   is defined
-      - opencloud_subdomain        is defined
+      - authelia_default_redirection_url   is defined
     fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
     quiet: true
   tags:

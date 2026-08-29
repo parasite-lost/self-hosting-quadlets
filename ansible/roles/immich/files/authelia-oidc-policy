@@ -1,0 +1,6 @@
+immich_policy:
+  custom_claims:
+    immich_quota:
+      attribute: 'immich_quota'
+    immich_role:
+      attribute: 'immich_role'

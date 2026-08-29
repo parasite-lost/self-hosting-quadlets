@@ -1,0 +1,35 @@
+---
+- name: Add authelia access control rule # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_access_control_rules: "{{
+      _authelia_access_control_rules +
+      [lookup('ansible.builtin.template', 'authelia-service-access-rule.j2')]
+      }}"
+
+- name: Add authelia oidc client # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_oidc_clients: "{{
+      _authelia_oidc_clients +
+      [lookup('ansible.builtin.template', 'authelia-oidc-client.j2')]
+      }}"
+
+- name: Add authelia oidc scope # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_oidc_scopes: "{{
+      _authelia_oidc_scopes +
+      [lookup('ansible.builtin.file', 'authelia-oidc-scope')]
+      }}"
+
+- name: Add authelia oidc policy # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_oidc_policies: "{{
+      _authelia_oidc_policies +
+      [lookup('ansible.builtin.file', 'authelia-oidc-policy')]
+      }}"
+
+- name: Add authelia extra attributes # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_extra_attributes: "{{
+      _authelia_extra_attributes +
+      [lookup('ansible.builtin.file', 'authelia-extra-attributes')]
+      }}"

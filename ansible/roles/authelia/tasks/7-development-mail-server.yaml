@@ -10,7 +10,7 @@
         dest: "{{ authelia_user_home }}/.config/containers/systemd/mailpit.container"
         mode: u+rw,g=r,o=
       notify:
-        - Restart authelia
+        - Schedule authelia restart
 
     - name: Allow mailpit port
       become: true

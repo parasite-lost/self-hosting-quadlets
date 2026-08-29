@@ -1,0 +1,20 @@
+---
+- name: Ensure authelia is enabled and restarted (if needed)
+  become: true
+  become_user: "{{ authelia_user_name }}"
+  block:
+    - name: Enable authelia
+      ansible.builtin.systemd_service:
+        unit: "authelia-pod.service"
+        scope: user
+        enabled: true
+        daemon_reload: true
+
+    - name: Restart authelia (if needed)
+      when: _authelia_restart_needed
+      ansible.builtin.systemd_service:
+        service: "authelia-pod.service"
+        state: restarted
+        scope: user
+        daemon_reload: true
+      changed_when: true

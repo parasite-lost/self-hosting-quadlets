@@ -18,3 +18,18 @@ authelia_jwt_secret_name: jwt-secret
 authelia_session_secret_name: session-secret
 authelia_oidc_hmac_secret_name: "oidc-hmac-secret"
 authelia_oidc_jwk_key_name: "oidc-jwk-private-key"
+
+# authelia configuration will receive configuration from other roles so restart
+# must happen in authelia_finalization post task after all those roles have run
+_authelia_restart_needed: false
+
+# collect access control rules for all backend services
+_authelia_access_control_rules: []
+# oidc client configurations for all backend services
+_authelia_oidc_clients: []
+_authelia_oidc_cors_allowed_origins: []
+_authelia_oidc_lifespans_custom: []
+_authelia_oidc_scopes: []
+_authelia_oidc_policies: []
+# extra attributes definitions for all backend services
+_authelia_extra_attributes: []

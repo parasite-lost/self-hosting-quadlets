@@ -1,0 +1,8 @@
+---
+- name: Finalize authelia configuration
+  block:
+    - name: Render authelia configuration for backend services
+      ansible.builtin.import_tasks: 1-render-services-configuration.yaml
+
+    - name: Enable and restart authelia (if needed)
+      ansible.builtin.import_tasks: 2-enable-restart-authelia.yaml

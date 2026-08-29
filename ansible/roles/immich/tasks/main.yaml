@@ -15,3 +15,6 @@
 
     - name: Add caddy integration
       ansible.builtin.import_tasks: 5-add-caddy-integration.yaml
+
+    - name: Add authelia configuration
+      ansible.builtin.import_tasks: 6-add-authelia-integration.yaml

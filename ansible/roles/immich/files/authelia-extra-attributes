@@ -1,0 +1,6 @@
+immich_quota:
+  multi_valued: false
+  value_type: string
+immich_role:
+  multi_valued: false
+  value_type: string

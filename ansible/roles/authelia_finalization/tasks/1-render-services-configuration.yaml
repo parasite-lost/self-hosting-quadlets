@@ -1,0 +1,20 @@
+---
+- name: Render authelia configuratio for backend services
+  become: true
+  become_user: "{{ authelia_user_name }}"
+  block:
+    - name: Create authelia access control configuration
+      ansible.builtin.template:
+        src: config-access-control.yml.j2
+        dest: "{{ authelia_user_home }}/config/config.d/access-control.yml"
+        mode: u=rw,g=r,o=
+      notify:
+        - Schedule authelia restart
+
+    - name: Create authelia authentication configuration
+      ansible.builtin.template:
+        src: config-authentication.yml.j2
+        dest: "{{ authelia_user_home }}/config/config.d/authentication.yml"
+        mode: u=rw,g=r,o=
+      notify:
+        - Schedule authelia restart

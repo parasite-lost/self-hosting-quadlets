@@ -1,0 +1,28 @@
+---
+- name: Add authelia access control rule # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_access_control_rules: "{{
+      _authelia_access_control_rules +
+      [lookup('ansible.builtin.template', 'authelia-service-access-rule.j2')]
+      }}"
+
+- name: Add authelia oidc client # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_oidc_clients: "{{
+      _authelia_oidc_clients +
+      [lookup('ansible.builtin.template', 'authelia-oidc-client.j2')]
+      }}"
+
+- name: Add authelia oidc cors allowed origin # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_oidc_cors_allowed_origins: "{{
+      _authelia_oidc_cors_allowed_origins +
+      [lookup('ansible.builtin.template', 'authelia-oidc-cors-allowed-origin.j2')]
+      }}"
+
+- name: Add authelia oidc lifespans # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_oidc_lifespans_custom: "{{
+      _authelia_oidc_lifespans_custom +
+      [lookup('ansible.builtin.file', 'authelia-oidc-lifespans')]
+      }}"
