@@ -1,0 +1,15 @@
+{
+    admin off
+    persist_config off
+    auto_https off
+}
+
+http:// {
+	# socket defined in static-website.socket
+	bind fd/3 {
+		protocols h1
+	}
+
+	root /www
+	file_server browse
+}

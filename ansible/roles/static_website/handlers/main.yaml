@@ -1,0 +1,18 @@
+---
+- name: Restart static website service
+  become: true
+  become_user: "{{ static_website_user_name }}"
+  ansible.builtin.systemd_service:
+    service: "static-website.service"
+    state: restarted
+    scope: user
+    daemon_reload: true
+
+- name: Enable static website service
+  become: true
+  become_user: "{{ static_website_user_name }}"
+  ansible.builtin.systemd_service:
+    unit: static-website.service
+    enabled: true
+    scope: user
+    daemon_reload: true

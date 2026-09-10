@@ -1,0 +1,6 @@
+---
+static_website_user_name: "static"
+static_website_user_home: "/home/{{ static_website_user_name }}"
+
+static_website_subdomain: 'www'
+static_website_port: "8080"

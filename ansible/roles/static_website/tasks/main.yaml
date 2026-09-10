@@ -9,11 +9,14 @@
     - name: Deploy static website content
       ansible.builtin.import_tasks: 2-deploy-static-website.yaml
 
-    - name: Deploy caddy service dropin
-      ansible.builtin.import_tasks: 3-create-caddy-container-dropin.yaml
+    - name: Create Caddyfile
+      ansible.builtin.import_tasks: 3-create-caddyfile.yaml
 
-    - name: Deploy caddy configuration dropin
-      ansible.builtin.import_tasks: 4-create-caddy-config-dropin.yaml
+    - name: Deploy caddy service dropin
+      ansible.builtin.import_tasks: 4-create-static-website-container.yaml
+
+    - name: Add caddy integration
+      ansible.builtin.import_tasks: 5-add-caddy-integration.yaml
 
     - name: Add authelia configuration
-      ansible.builtin.import_tasks: 5-add-authelia-integration.yaml
+      ansible.builtin.import_tasks: 6-add-authelia-integration.yaml

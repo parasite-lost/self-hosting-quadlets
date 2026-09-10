@@ -1,0 +1,33 @@
+---
+- name: Deploy caddy container serving the static website
+  become: true
+  become_user: "{{ static_website_user_name }}"
+  block:
+    - name: Create systemd user folder
+      ansible.builtin.file:
+        path: "{{ static_website_user_home }}/.config/systemd/user"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Add socket unit (socket activation)
+      ansible.builtin.copy:
+        src: static-website.socket
+        dest: "{{ static_website_user_home }}/.config/systemd/user/static-website.socket"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart static website service
+
+    - name: Create container systemd folder
+      ansible.builtin.file:
+        path: "{{ static_website_user_home }}/.config/containers/systemd"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create static website container
+      ansible.builtin.template:
+        src: static-website.container.j2
+        dest: "{{ static_website_user_home }}/.config/containers/systemd/static-website.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart static website service
+        - Enable static website service

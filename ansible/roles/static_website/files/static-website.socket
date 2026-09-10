@@ -1,0 +1,10 @@
+[Unit]
+Description=Socket for caddy static website
+
+[Socket]
+BindIPv6Only=no
+# HTTP: fd/3
+ListenStream=127.0.0.1:8080
+
+[Install]
+WantedBy=sockets.target

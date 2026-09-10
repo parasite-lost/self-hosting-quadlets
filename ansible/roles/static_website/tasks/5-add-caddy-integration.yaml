@@ -1,0 +1,15 @@
+---
+- name: Add caddy integration
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  block:
+    - name: Create caddy configuration dropin
+      ansible.builtin.template:
+        src: "static.caddy.j2"
+        dest: "{{ caddy_dir_caddyfile_subdomain_d }}/static.caddy"
+        mode: u=rw,g=r,o=
+
+    - name: Add caddy pasta port mapping # noqa: var-naming
+      ansible.builtin.set_fact:
+        # add '-T,8080' to caddy's pasta parameters
+        caddy_pasta_port_map: "{{ caddy_pasta_port_map | union(['-T,' ~ static_website_port ]) }}"
