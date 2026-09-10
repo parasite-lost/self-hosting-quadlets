@@ -1,0 +1,29 @@
+[Unit]
+Description=Static website served with caddy
+AssertPathExists={{ static_website_dir_config }}/Caddyfile
+AssertPathExists={{ static_website_dir_www }}
+Requires=static-website.socket
+After=static-website.socket
+
+[Service]
+Restart=on-failure
+
+[Container]
+ContainerName=static-website
+Label=app=static-website
+
+Image=docker.io/library/caddy:2
+#AutoUpdate=registry
+Notify=true
+ReadOnly=true
+
+Exec=/usr/bin/caddy run --config /etc/caddy/Caddyfile
+
+NoNewPrivileges=true
+
+# no persistent data needed (/config, /data)
+Volume={{ static_website_dir_config }}:/etc/caddy:ro,Z
+Volume={{ static_website_dir_www }}:/www:ro,Z
+
+[Install]
+WantedBy=default.target

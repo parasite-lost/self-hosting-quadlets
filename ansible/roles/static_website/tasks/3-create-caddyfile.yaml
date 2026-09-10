@@ -1,0 +1,15 @@
+- name: Create Caddyfile
+  become: true
+  become_user: "{{ static_website_user_name }}"
+  block:
+    - name: Create caddy configuration directory
+      ansible.builtin.file:
+        path: "{{ static_website_dir_config }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create Caddyfile
+      ansible.builtin.copy:
+        src: Caddyfile
+        dest: "{{ static_website_dir_config }}/Caddyfile"
+        mode: u=rw,g=r,o=
