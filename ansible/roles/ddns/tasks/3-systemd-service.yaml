@@ -1,4 +1,13 @@
 ---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - ddns_api_token is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
 - name: Create ddns systemd service
   become: true
   become_user: "{{ ddns_user_name }}"

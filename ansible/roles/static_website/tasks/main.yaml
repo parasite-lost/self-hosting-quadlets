@@ -1,8 +1,5 @@
 - name: Deploy static website
   block:
-    - name: Check variables
-      ansible.builtin.import_tasks: 0-validate-static-website-variables.yaml
-
     - name: Create user
       ansible.builtin.import_tasks: 1-create-static_website-user.yaml
 

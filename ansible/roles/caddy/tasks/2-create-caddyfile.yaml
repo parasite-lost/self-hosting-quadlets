@@ -1,4 +1,14 @@
 ---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - caddy_dns_provider is in _caddy_supported_dns_provider
+      - host_maindomain    is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
 - name: Create Caddyfile and configuration dropin folders
   become: true
   become_user: "{{ caddy_user_name }}"

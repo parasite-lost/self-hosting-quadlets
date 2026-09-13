@@ -1,4 +1,17 @@
 ---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - host_maindomain                  is defined
+      - authelia_smtp_address            is defined
+      - authelia_smtp_sender             is defined
+      - authelia_smtp_username           is defined
+      - authelia_default_redirection_url is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
 - name: Create authelia configuration
   become: true
   become_user: "{{ authelia_user_name }}"

@@ -1,4 +1,13 @@
 ---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - host_maindomain   is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
 - name: Add authelia access control rule # noqa: var-naming
   ansible.builtin.set_fact:
     _authelia_access_control_rules: "{{

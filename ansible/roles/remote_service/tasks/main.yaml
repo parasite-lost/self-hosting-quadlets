@@ -2,14 +2,9 @@
 - name: Validate required variables are defined
   ansible.builtin.assert:
     that:
-      - remote_service_user_name    is defined
-      - remote_service_user_home    is defined
       - host_maindomain             is defined
-      - remote_service_subdomain    is defined
-      - remote_service_port         is defined
       - remote_service_client_admin is defined
       - remote_service_ssh_key      is defined
-      - remote_service_key_options  is defined
     fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
     quiet: true
   tags:
