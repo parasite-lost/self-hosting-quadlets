@@ -1,4 +1,14 @@
 ---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - host_maindomain is defined
+      - host_time_zone  is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
 - name: Create user bin folder
   become: true
   become_user: "{{ ddns_user_name }}"

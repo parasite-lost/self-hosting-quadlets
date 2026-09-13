@@ -1,7 +1,4 @@
 ---
-- name: Check variables
-  ansible.builtin.import_tasks: 0-validate-ddns-variables.yaml
-
 - name: Create ddns user
   ansible.builtin.import_tasks: 1-create-ddns-user.yaml
 

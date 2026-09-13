@@ -2,10 +2,7 @@
 - name: Validate required variables are defined
   ansible.builtin.assert:
     that:
-      - caddy_user_name                 is defined
-      - caddy_pasta_port_map            is defined
-      - caddy_dir_caddyfile_subdomain_d is defined
-      - opencloud_port                  is defined
+      - opencloud_root_ca is defined
     fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
     quiet: true
   tags:

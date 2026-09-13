@@ -1,9 +1,6 @@
 ---
 - name: Setup authelia authenticaion service
   block:
-    - name: Check variables
-      ansible.builtin.import_tasks: 0-validate-authelia-variables.yaml
-
     - name: Create authelia user
       ansible.builtin.import_tasks: 1-create-authelia-user.yaml
 

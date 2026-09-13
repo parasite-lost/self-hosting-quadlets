@@ -1,9 +1,6 @@
 ---
 - name: Setup opencloud service
   block:
-    - name: Check variables
-      ansible.builtin.import_tasks: 0-validate-opencloud-variables.yaml
-
     - name: Create opencloud user
       ansible.builtin.import_tasks: 1-create-opencloud-user.yaml
 

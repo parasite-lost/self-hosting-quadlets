@@ -4,10 +4,7 @@
     that:
       - host_maindomain        is defined
       - host_time_zone         is defined
-      - immich_user_name       is defined
-      - immich_user_home       is defined
       - immich_upload_location is defined
-      - immich_version         is defined
     fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
     quiet: true
   tags:

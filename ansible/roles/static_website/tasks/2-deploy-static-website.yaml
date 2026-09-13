@@ -2,8 +2,7 @@
 - name: Validate required variables are defined
   ansible.builtin.assert:
     that:
-      - static_website_user_home is defined
-      - static_website_user_home is defined
+      - host_maindomain          is defined
       - static_website_files     is defined
       - static_website_files     is directory
       - static_website_templates is defined

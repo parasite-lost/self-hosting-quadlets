@@ -1,14 +1,4 @@
 ---
-- name: Validate required variables are defined
-  ansible.builtin.assert:
-    that:
-      - immich_subdomain is defined
-      - immich_port      is defined
-    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
-    quiet: true
-  tags:
-    - validate
-
 - name: Add caddy integration
   become: true
   become_user: "{{ caddy_user_name }}"

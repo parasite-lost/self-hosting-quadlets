@@ -1,9 +1,6 @@
 ---
 - name: Setup caddy reverse proxy
   block:
-    - name: Check variables
-      ansible.builtin.import_tasks: 0-validate-caddy-variables.yaml
-
     - name: Create caddy user
       ansible.builtin.import_tasks: 1-create-caddy-user.yaml
 
