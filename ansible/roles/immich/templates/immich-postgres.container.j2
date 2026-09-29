@@ -15,7 +15,7 @@ Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec
 Environment=TZ={{ host_time_zone }}
 Environment=POSTGRES_USER=postgres
 Environment=POSTGRES_DB=immich
-Environment=POSTGRES_PASSWORD_FILE=/run/credentials/{{ immich_database_password_name }}
+Environment=POSTGRES_PASSWORD_FILE=/run/credentials/{{ _immich_db_database_password_name }}
 Environment=POSTGRES_INITDB_ARGS="--data-checksums"
 
 

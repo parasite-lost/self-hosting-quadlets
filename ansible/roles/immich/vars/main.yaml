@@ -11,4 +11,5 @@ immich_postgres_container_d_credentials: "{{ immich_postgres_container_d }}/cred
 
 # can be overridden with --extra-vars '{"immich_refresh_credential": true}'
 immich_refresh_credential: false
-immich_database_password_name: db_password
+_immich_app_database_password_name: db_password
+_immich_db_database_password_name: db_password

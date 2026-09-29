@@ -13,7 +13,8 @@ authelia_refresh_credential: false
 # credential names
 authelia_smtp_password_name: smtp-token
 authelia_storage_encryption_key_name: storage-encryption-key
-authelia_storage_password_name: storage-password
+_authelia_app_storage_password_name: storage-password-app
+_authelia_db_storage_password_name: storage-password-db
 authelia_jwt_secret_name: jwt-secret
 authelia_session_secret_name: session-secret
 authelia_oidc_hmac_secret_name: "oidc-hmac-secret"

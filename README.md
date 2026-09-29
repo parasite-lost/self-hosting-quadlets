@@ -4,6 +4,12 @@
 
 ## Architecture & Design
 
+Core idea: rootless podman quadlets with sensitive data stored in systemd
+credentials. Since rootless podman quadlets do not support filesystem
+namespacing (via systemd sandboxing mechanism) it is necessary to run different
+independent services under different users so that systemd credentials cannot
+leak between services.
+
 * every service runs under a separate user (reverse proxy,
   authentication, backend services).
 * every service is managed in a systemd user session (lingering user).
@@ -22,9 +28,20 @@
   an [mTLS certificate](mtls/mtls.md).
 * credentials and other sensitive data are encrypted at rest via systemd
   credentials (TPM encrypted), mounted into the service (automatically by
-  systemd) and then mounted into the service's container as a volume mount
+  systemd) and then mounted into the service's container as a volume mount.
+  Note that filesystem namespacing is not possible with rootless podman quadlets
+  which means that the credentials are visible for each of the user's service;
+  this requires to ensure that multiple services do not reuse the same
+  credential name (e.g. credential for database password in database container
+  and application container).
 
-### Alternatives
+### Alternatives Considered
+
+While running quadlets as systemd system services allows for setting up
+filesystem namespacing and fully isolating systemd credentials per service
+it is not possible to run quadlets rootless as systemd services even when
+specifying `User=` in the unit's `Service` section (see
+[podman-systemd.unit](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html))
 
 Inter-service communication may (or may not) be possible using unix domain
 sockets together with `systemd-socket-proxyd` to activate unix socket on one

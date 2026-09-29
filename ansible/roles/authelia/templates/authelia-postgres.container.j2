@@ -20,7 +20,7 @@ Exec=-c listen_addresses='' -c unix_socket_permissions=0770
 Environment=TZ={{ host_time_zone }}
 Environment=POSTGRES_USER=authelia
 Environment=POSTGRES_DB=authelia
-Environment=POSTGRES_PASSWORD_FILE=/run/credentials/storage-password
+Environment=POSTGRES_PASSWORD_FILE=/run/credentials/{{ _authelia_db_storage_password_name }}
 
 # :z required as volume is shared
 Volume=authelia-internal-communication.volume:/var/run/postgresql:z
