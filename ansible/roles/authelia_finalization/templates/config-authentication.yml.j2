@@ -16,7 +16,7 @@ identity_providers:
     ## See: https://www.authelia.com/c/oidc
     # hmac_secret: set via AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE
     jwks:
-      - key: {{ '{{' }} secret "/run/credentials/{{ authelia_oidc_jwk_key_name }}" | mindent 10 "|" | msquote {{ '}}' }}
+      - key: {{ '{{' }} secret "/run/credentials/{{ _authelia_oidc_jwk_key_name }}" | mindent 10 "|" | msquote {{ '}}' }}
 
     claims_policies:
       {{ _authelia_oidc_policies | map('trim') | join('\n') | indent(6) }}

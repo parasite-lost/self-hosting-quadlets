@@ -11,14 +11,14 @@ authelia_postgres_container_d_credentials: "{{ authelia_postgres_container_d }}/
 # can be overridden with --extra-vars '{"authelia_refresh_credential": true}'
 authelia_refresh_credential: false
 # credential names
-authelia_smtp_password_name: smtp-token
-authelia_storage_encryption_key_name: storage-encryption-key
+_authelia_smtp_password_name: smtp-token
+_authelia_storage_encryption_key_name: storage-encryption-key
 _authelia_app_storage_password_name: storage-password-app
 _authelia_db_storage_password_name: storage-password-db
-authelia_jwt_secret_name: jwt-secret
-authelia_session_secret_name: session-secret
-authelia_oidc_hmac_secret_name: "oidc-hmac-secret"
-authelia_oidc_jwk_key_name: "oidc-jwk-private-key"
+_authelia_jwt_secret_name: jwt-secret
+_authelia_session_secret_name: session-secret
+_authelia_oidc_hmac_secret_name: "oidc-hmac-secret"
+_authelia_oidc_jwk_key_name: "oidc-jwk-private-key"
 
 # authelia configuration will receive configuration from other roles so restart
 # must happen in authelia_finalization post task after all those roles have run

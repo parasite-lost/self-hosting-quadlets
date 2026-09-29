@@ -35,7 +35,7 @@
       block:
         - name: Generate credential api token
           ansible.builtin.command:
-            cmd: "systemd-creds encrypt --user --pretty --name={{ ddns_credential_api_token_name }} - -"
+            cmd: "systemd-creds encrypt --user --pretty --name={{ _ddns_credential_api_token_name }} - -"
             stdin: "{{ ddns_api_token }}"
           register: ddns_credential_api_token
           changed_when: false

@@ -10,7 +10,7 @@ ZONE_ID="{{ ddns_zone_id }}"
 RECORD_ID="{{ ddns_record_id }}"
 
 # Use API token for authenticate: https://dash.cloudflare.com/profile/api-tokens
-API_TOKEN=$(cat "$CREDENTIALS_DIRECTORY/{{ ddns_credential_api_token_name }}")
+API_TOKEN=$(cat "$CREDENTIALS_DIRECTORY/{{ _ddns_credential_api_token_name }}")
 
 # Desired domain name
 DOMAIN_NAME="*.{{ host_maindomain }}"

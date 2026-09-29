@@ -79,7 +79,7 @@
           block:
             - name: Create encrypted systemd credential
               ansible.builtin.command:
-                cmd: "systemd-creds encrypt --user --pretty --name={{ caddy_cloudflare_acme_api_token_name }} - -"
+                cmd: "systemd-creds encrypt --user --pretty --name={{ _caddy_cloudflare_acme_api_token_name }} - -"
                 stdin: "{{ caddy_cloudflare_acme_api_token }}"
               register: caddy_credential_acme_api_token
               changed_when: false

@@ -6,4 +6,4 @@ ddns_user_service_d_credential: "{{ ddns_user_service_d }}/credentials.conf"
 
 # ddns_refresh_credential can be overridden with --extra-vars
 ddns_refresh_credential: false
-ddns_credential_api_token_name: token
+_ddns_credential_api_token_name: token

@@ -19,12 +19,12 @@ Image=ghcr.io/authelia/authelia:4
 Exec=authelia --config /config/configuration.yml --config /config/config.d/
 
 Environment=TZ={{ host_time_zone }}
-Environment=AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE=/run/credentials/{{ authelia_jwt_secret_name }}
-Environment=AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE=/run/credentials/{{ authelia_storage_encryption_key_name }}
+Environment=AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE=/run/credentials/{{ _authelia_jwt_secret_name }}
+Environment=AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE=/run/credentials/{{ _authelia_storage_encryption_key_name }}
 Environment=AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE=/run/credentials/{{ _authelia_app_storage_password_name }}
-Environment=AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE=/run/credentials/{{ authelia_smtp_password_name }}
-Environment=AUTHELIA_SESSION_SECRET_FILE=/run/credentials/{{ authelia_session_secret_name }}
-Environment=AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE=/run/credentials/{{ authelia_oidc_hmac_secret_name }}
+Environment=AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE=/run/credentials/{{ _authelia_smtp_password_name }}
+Environment=AUTHELIA_SESSION_SECRET_FILE=/run/credentials/{{ _authelia_session_secret_name }}
+Environment=AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE=/run/credentials/{{ _authelia_oidc_hmac_secret_name }}
 Environment=X_AUTHELIA_CONFIG_FILTERS=template
 
 # :z required as volume is shared
