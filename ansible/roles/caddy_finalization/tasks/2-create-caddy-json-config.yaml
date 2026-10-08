@@ -21,7 +21,7 @@
     - name: Convert Caddyfile to json
       ansible.builtin.command:
         cmd: >-
-          podman run --rm -it
+          podman run --rm
             -v {{ caddy_dir_caddyfile_config }}:/config:ro,Z
             {{ caddy_container_image }}
             caddy adapt --config /config/Caddyfile

@@ -12,13 +12,6 @@
   become: true
   become_user: "{{ opencloud_user_name }}"
   block:
-
-    - name: Create quadlet folder
-      ansible.builtin.file:
-        path: "{{ opencloud_user_home }}/.config/containers/systemd"
-        state: directory
-        mode: u=rwx,g=rx,o=
-
     - name: Create opencloud app container
       ansible.builtin.template:
         src: opencloud-server.container.j2
