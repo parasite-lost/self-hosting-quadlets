@@ -4,9 +4,9 @@
   authorization_policy: 'two_factor'
   require_pkce: true
   redirect_uris:
-    - 'https://{{ opencloud_subdomain }}.{{ host_maindomain }}/'
-    - 'https://{{ opencloud_subdomain }}.{{ host_maindomain }}/oidc-callback.html'
-    - 'https://{{ opencloud_subdomain }}.{{ host_maindomain }}/oidc-silent-redirect.html'
+    - 'https://{{ opencloud_cloud_subdomain }}.{{ host_maindomain }}/'
+    - 'https://{{ opencloud_cloud_subdomain }}.{{ host_maindomain }}/oidc-callback.html'
+    - 'https://{{ opencloud_cloud_subdomain }}.{{ host_maindomain }}/oidc-silent-redirect.html'
   scopes:
     - 'openid'
     - 'profile'

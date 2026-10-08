@@ -17,7 +17,7 @@ Entrypoint=/bin/bash
 Exec=-c "if [ ! -f /etc/opencloud/opencloud.yaml ]; then opencloud init; fi; exec opencloud server"
 
 # OpenCloud native environment variables
-Environment=OC_URL=https://{{ opencloud_subdomain }}.{{ host_maindomain }}
+Environment=OC_URL=https://{{ opencloud_cloud_subdomain }}.{{ host_maindomain }}
 # self generated certificates: true, otherwise false:
 Environment=OC_INSECURE={{ 'true' if deploy_purpose == 'development' else 'false' }}
 # connection to reverse proxy without TLS
@@ -52,5 +52,5 @@ Environment=OC_BASE_DATA_PATH=/var/lib/opencloud
 Environment=OC_CONFIG_DIR=/etc/opencloud
 
 # host mounts
-Volume=%h/config:/etc/opencloud:z
-Volume=%h/data:/var/lib/opencloud:z
+Volume={{ opencloud_dir_config_opencloud }}:/etc/opencloud:Z
+Volume={{ opencloud_dir_data }}:/var/lib/opencloud:Z
