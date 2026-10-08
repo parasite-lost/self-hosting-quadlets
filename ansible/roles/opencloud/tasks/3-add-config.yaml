@@ -18,12 +18,6 @@
         state: directory
         mode: u=rwx,g=rx,o=
 
-    - name: Add proxy configuration
-      ansible.builtin.copy:
-        src: "proxy.yaml"
-        dest: "{{ opencloud_dir_config }}/proxy.yaml"
-        mode: u=rw,g=r,o=
-
     - name: Add csp configuration
       ansible.builtin.template:
         src: "csp.yaml.j2"

@@ -1,0 +1,6 @@
+opencloud_role:
+  multi_valued: false
+  value_type: string
+opencloud_groups:
+  multi_valued: true
+  value_type: string

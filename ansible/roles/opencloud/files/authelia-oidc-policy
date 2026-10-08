@@ -1,0 +1,6 @@
+opencloud_policy:
+  custom_claims:
+    opencloud_role:
+      attribute: 'opencloud_role'
+    opencloud_groups:
+      attribute: 'opencloud_groups'

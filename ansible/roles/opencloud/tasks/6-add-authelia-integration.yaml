@@ -35,3 +35,24 @@
       _authelia_oidc_lifespans_custom +
       [lookup('ansible.builtin.file', 'authelia-oidc-lifespans')]
       }}"
+
+- name: Add authelia oidc scope # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_oidc_scopes: "{{
+      _authelia_oidc_scopes +
+      [lookup('ansible.builtin.file', 'authelia-oidc-scope')]
+      }}"
+
+- name: Add authelia oidc policy # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_oidc_policies: "{{
+      _authelia_oidc_policies +
+      [lookup('ansible.builtin.file', 'authelia-oidc-policy')]
+      }}"
+
+- name: Add authelia extra attributes # noqa: var-naming
+  ansible.builtin.set_fact:
+    _authelia_extra_attributes: "{{
+      _authelia_extra_attributes +
+      [lookup('ansible.builtin.file', 'authelia-extra-attributes')]
+      }}"

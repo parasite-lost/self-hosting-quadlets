@@ -1,0 +1,4 @@
+opencloud_scope:
+  claims:
+    - 'opencloud_role'
+    - 'opencloud_groups'

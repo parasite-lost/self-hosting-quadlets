@@ -1,3 +1,6 @@
-opencloud:
-  access_token: '60m'
-  refresh_token: '90m'
+opencloud_native:
+  access_token: '15m'
+  refresh_token: '30d'
+opencloud_web:
+  access_token: '15m'
+  refresh_token: '12h'
