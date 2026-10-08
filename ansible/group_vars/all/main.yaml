@@ -4,3 +4,6 @@ ansible_ssh_common_args: '-o "SetEnv TERM=dumb"'
 # local data
 local_user: "{{ lookup('env', 'USER') }}"
 local_home: "{{ lookup('env', 'HOME') }}"
+
+# can be overridden with --extra-vars '{"all_refresh_credential": true}'
+all_refresh_credential: false

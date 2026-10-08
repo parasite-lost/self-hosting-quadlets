@@ -72,7 +72,7 @@
       diff: true
 
     - name: Create credential
-      when: caddy_refresh_credential or not caddy_credential_file.stat.exists
+      when: all_refresh_credential or caddy_refresh_credential or not caddy_credential_file.stat.exists
       block:
         - name: Create cloudflare credential
           when: caddy_dns_provider == "cloudflare"
