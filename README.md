@@ -63,7 +63,8 @@ environment variables; but I'll try to avoid such applications.
 * [caddy](ansible/roles/caddy/README.md): reverse proxy
 * [authelia](ansible/roles/authelia/README.md): SSO, OAuth2/OIDC
 * [immich](ansible/roles/immich/README.md): image and video management
-* [opencloud](ansible/roles/opencloud/README.md): generic cloud storage
+* [opencloud](ansible/roles/opencloud/README.md): generic cloud storage with
+  collabora (online office suite)
 * ...
 
 ## TODO:

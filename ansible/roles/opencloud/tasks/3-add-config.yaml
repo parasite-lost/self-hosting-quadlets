@@ -18,6 +18,12 @@
         state: directory
         mode: u=rwx,g=rx,o=
 
+    - name: Add config folder for collabora
+      ansible.builtin.file:
+        path: "{{ opencloud_dir_config_collabora }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
     - name: Add csp configuration
       ansible.builtin.template:
         src: "csp.yaml.j2"

@@ -3,6 +3,8 @@
 OpenCloud is a cloud storage solution. Accounts are automatically provisioned
 via Authelia.
 
+Collabora Online provides an online office suite integrated with OpenCloud.
+
 ## Configuration
 
 ### OpenCloud
@@ -18,6 +20,18 @@ first startup.
 The only thing needed to configure is the mTLS certificate:
 
 * `opencloud_root_ca`: path to mTLS root CA certificate to guard OpenCloud
+
+### Collabora Online
+
+* https://sdk.collaboraonline.com/contents.html
+
+To secure the admin endpoint `/browser/dist/admin/admin.html` an admin user name
+and password are required.
+
+Required configuration parameters:
+
+* `opencloud_collabora_admin_user`: admin user name
+* `opencloud_collabora_admin_password`: admin password
 
 ## mTLS
 

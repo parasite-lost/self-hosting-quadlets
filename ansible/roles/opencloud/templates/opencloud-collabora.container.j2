@@ -1,0 +1,36 @@
+[Unit]
+Description=Opencloud collabora container
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Container]
+Pod=opencloud.pod
+Label=app=opencloud
+ContainerName=opencloud-collabora
+
+Image=docker.io/collabora/code:latest
+#AutoUpdate=registry
+
+# TLS is handled by reverse proxy
+Environment=DONT_GEN_SSL_CERT=true
+# allow OpenCloud as wopi server
+# Alternative A: public URI (requires hop via reverse proxy, ignore self-signed certificate issue in case of localhost deployment)
+#Environment=aliasgroup1=https://{{ opencloud_cloud_subdomain }}.{{ host_maindomain }}
+#Environment="extra_params=--o:ssl.enable=false --o:ssl.termination=true{{ ' --o:ssl.ssl_verification=false' if deploy_purpose == 'development' }}"
+# Alternative B: intra-pod URI (direct communication, no TLS overhead, client must receive public URIs though)
+Environment=aliasgroup1=http://127.0.0.1:9200
+# ssl.enable=false: do not handle TLS
+# ssl.terminate=true: hand out https URIs to clients
+# server_name=...: set the actual server name for URIs sent to client (do not use 127.0.0.1:9200)
+# net.frame_ancestors=...: required for CSP (by default only allows 127.0.0.1:9200)
+Environment="extra_params=--o:ssl.enable=false --o:ssl.termination=true --o:server_name={{ opencloud_collabora_subdomain }}.{{ host_maindomain }} --o:net.frame_ancestors=https://{{ opencloud_cloud_subdomain }}.{{ host_maindomain }}"
+
+# admin credentials for admin interface:
+# https://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}/browser/dist/admin/admin.html
+Environment=username={{ opencloud_collabora_admin_user }}
+Secret=collabora_admin_password,type=env,target=password
+
+# WOPI proof key, make accessible to collabora user
+Secret=collabora_proof_key,type=mount,target=/etc/coolwsd/proof_key,uid={{ opencloud_collabora_uid }},gid={{ opencloud_collabora_gid }},mode=0400

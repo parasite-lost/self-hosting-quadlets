@@ -5,6 +5,7 @@ Description=Pod for opencloud
 PodName=opencloud
 Label=app=opencloud
 PublishPort=127.0.0.1:{{ opencloud_cloud_port }}:9200
+PublishPort=127.0.0.1:{{ opencloud_collabora_port }}:9980
 PodmanArgs=--network=pasta:-T,443
 
 [Install]

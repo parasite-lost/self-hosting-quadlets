@@ -1,0 +1,7 @@
+---
+# baked-in uid/gid of collabora container user
+opencloud_collabora_uid: '1001'
+opencloud_collabora_gid: '1001'
+
+# can be overridden with --extra-vars '{"opencloud_refresh_credential": true}'
+opencloud_refresh_credential: false

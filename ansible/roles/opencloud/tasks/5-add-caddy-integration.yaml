@@ -23,3 +23,8 @@
       ansible.builtin.set_fact:
         # add '-T,9200' to caddy's pasta parameters
         caddy_pasta_port_map: "{{ caddy_pasta_port_map | union(['-T,' ~ opencloud_cloud_port]) }}"
+
+    - name: Add caddy pasta port mapping # noqa: var-naming
+      ansible.builtin.set_fact:
+        # add '-T,9980' to caddy's pasta parameters
+        caddy_pasta_port_map: "{{ caddy_pasta_port_map | union(['-T,' ~ opencloud_collabora_port]) }}"

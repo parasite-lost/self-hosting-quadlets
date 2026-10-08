@@ -1,5 +1,7 @@
 [Unit]
 Description=Opencloud server container
+After=opencloud-collabora.service
+Wants=opencloud-collabora.service
 
 [Service]
 Restart=always
@@ -25,6 +27,17 @@ Environment=PROXY_TLS=false
 
 # do not run authentication service -> integrate authelia instead
 Environment=OC_EXCLUDE_RUN_SERVICES=idp
+Environment=OC_ADD_RUN_SERVICES=collaboration
+
+# collaboration
+#Environment=COLLABORATION_WOPI_SRC=https://{{ opencloud_cloud_subdomain }}.{{ host_maindomain }}
+Environment=COLLABORATION_WOPI_SRC=http://127.0.0.1:9200
+#Environment=COLLABORATION_APP_ADDR=https://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}
+Environment=COLLABORATION_APP_ADDR=http://127.0.0.1:9980
+Environment=COLLABORATION_APP_INSECURE=false
+Environment=COLLABORATION_APP_NAME=CollaboraOnline
+Environment=COLLABORATION_APP_PRODUCT=Collabora
+Environment=COLLABORATION_APP_ICON=https://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}/favicon.ico
 
 # External Authelia OIDC Links
 Environment=OC_OIDC_ISSUER=https://{{ authelia_subdomain }}.{{ host_maindomain }}

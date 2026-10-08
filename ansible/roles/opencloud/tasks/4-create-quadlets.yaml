@@ -2,7 +2,9 @@
 - name: Validate required variables are defined
   ansible.builtin.assert:
     that:
-      - host_maindomain   is defined
+      - host_maindomain                    is defined
+      - opencloud_collabora_admin_password is defined
+      - opencloud_collabora_admin_user     is defined
     fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
     quiet: true
   tags:
@@ -16,6 +18,58 @@
       ansible.builtin.template:
         src: opencloud-server.container.j2
         dest: "{{ opencloud_user_home }}/.config/containers/systemd/opencloud-server.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart opencloud
+
+    - name: Create collabora admin password podman secret
+      containers.podman.podman_secret:
+        name: collabora_admin_password
+        data: "{{ opencloud_collabora_admin_password }}"
+        state: present
+        skip_existing: "{{ not (all_refresh_credential | default(false) | bool or opencloud_refresh_credential | default(false) | bool) }}"
+      no_log: true
+
+    - name: Create collabora proof_key
+      block:
+        - name: Lookup collabora proof_key podman secret
+          ansible.builtin.command:
+            cmd: podman secret exists collabora_proof_key
+          register: opencloud_collabora_proof_key_exists
+          changed_when: false
+          failed_when: false
+          check_mode: false
+
+        - name: Create collabora proof_key podman secret
+          when: >-
+            opencloud_collabora_proof_key_exists.rc != 0
+            or all_refresh_credential | default(false) | bool
+            or opencloud_refresh_credential | default(false) | bool
+          block:
+            - name: Generate RSA key
+              community.crypto.openssl_privatekey_pipe:
+                type: RSA
+                size: 2048
+                format: pkcs1
+              delegate_to: localhost
+              become: false
+              register: opencloud_collabora_proof_key
+              no_log: true
+
+            - name: Create podman secret
+              containers.podman.podman_secret:
+                name: collabora_proof_key
+                data: "{{ opencloud_collabora_proof_key.privatekey }}"
+                state: present
+                force: true
+              no_log: true
+              notify:
+                - Restart opencloud
+
+    - name: Create opencloud collabora container
+      ansible.builtin.template:
+        src: opencloud-collabora.container.j2
+        dest: "{{ opencloud_user_home }}/.config/containers/systemd/opencloud-collabora.container"
         mode: u=rw,g=r,o=
       notify:
         - Restart opencloud

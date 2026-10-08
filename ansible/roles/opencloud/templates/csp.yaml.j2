@@ -7,21 +7,26 @@ directives:
     - "'self'"
     - 'blob:'
     - 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
+    - 'https://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}'
+    - 'wss://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}'
     - 'https://raw.githubusercontent.com/opencloud-eu/awesome-apps/'
     - 'https://update.opencloud.eu/'
   font-src:
     - "'self'"
     - 'data:'
     - 'https://embed.diagrams.net/'
+    - 'https://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}'
   form-action:
     - "'self'"
     - 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
+    - 'https://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}'
   frame-ancestors:
     - "'self'"
   frame-src:
     - "'self'"
     - 'blob:'
     - 'https://{{ authelia_subdomain }}.{{ host_maindomain }}'
+    - 'https://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}'
     - 'https://embed.diagrams.net/'
     - 'https://docs.opencloud.eu'
   img-src:
@@ -38,6 +43,7 @@ directives:
     - "'self'"
     - "'unsafe-inline'"
     - "'unsafe-eval'"
+    - 'https://{{ opencloud_collabora_subdomain }}.{{ host_maindomain }}'
   style-src:
     - "'self'"
     - "'unsafe-inline'"
