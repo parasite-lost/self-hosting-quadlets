@@ -5,6 +5,13 @@ via Authelia.
 
 Collabora Online provides an online office suite integrated with OpenCloud.
 
+## Upgrades
+
+Upgrade guide: https://docs.opencloud.eu/docs/admin/maintenance/upgrade/upgrade-guide
+
+* run `opencloud init --diff` in a temporary container with the config directory mounted
+* check for patches to apply and apply them
+
 ## Configuration
 
 ### OpenCloud

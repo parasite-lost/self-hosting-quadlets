@@ -7,7 +7,8 @@ opencloud_cloud_port: "9200"
 opencloud_collabora_subdomain: "collabora"
 opencloud_collabora_port: "9980"
 
-opencloud_version: "8.1"
+opencloud_cloud_version: "8.1"
+opencloud_collabora_version: "26.04.4.2.1"
 
 opencloud_dir_data: "{{ opencloud_user_home }}/data"
 opencloud_dir_config_opencloud: "{{ opencloud_user_home }}/config/opencloud"
