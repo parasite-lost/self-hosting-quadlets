@@ -79,6 +79,11 @@ Environment=PROXY_CSP_CONFIG_FILE_LOCATION=/etc/opencloud/csp.yaml
 Environment=OC_BASE_DATA_PATH=/var/lib/opencloud
 Environment=OC_CONFIG_DIR=/etc/opencloud
 
+# user spaces layout (human readable prefix for easier identification during potential migration)
+# .User.Username is preferred_username (PROXY_AUTOPROVISION_CLAIM_USERNAME)
+Environment=STORAGE_USERS_DRIVER=posix
+Environment=STORAGE_USERS_POSIX_PERSONAL_SPACE_PATH_TEMPLATE={% raw %}"users/{{.User.Username|lower}}-{{.User.Id.OpaqueId}}"{% endraw %}
+
 # host mounts
 Volume={{ opencloud_dir_config_opencloud }}:/etc/opencloud:Z
 Volume={{ opencloud_dir_data }}:/var/lib/opencloud:Z
