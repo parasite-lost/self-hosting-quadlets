@@ -9,6 +9,7 @@
         scope: user
         enabled: true
         daemon_reload: true
+      when: not ansible_check_mode
 
     - name: Restart authelia (if needed)
       when: _authelia_restart_needed

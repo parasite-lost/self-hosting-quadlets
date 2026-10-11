@@ -78,3 +78,4 @@
         scope: user
         enabled: true
         daemon_reload: true
+      when: not ansible_check_mode
