@@ -1,0 +1,37 @@
+---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - host_maindomain is defined
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
+- name: Create opencloud quadlets
+  become: true
+  become_user: "{{ opencloud_opencloud_user_name }}"
+  block:
+    - name: Create opencloud app container
+      ansible.builtin.template:
+        src: opencloud-server.container.j2
+        dest: "{{ opencloud_opencloud_user_home }}/.config/containers/systemd/opencloud-server.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart opencloud
+
+    - name: Create opencloud pod
+      ansible.builtin.template:
+        src: opencloud.pod.j2
+        dest: "{{ opencloud_opencloud_user_home }}/.config/containers/systemd/opencloud.pod"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart opencloud
+
+    - name: Enable opencloud
+      ansible.builtin.systemd_service:
+        unit: "opencloud-pod.service"
+        scope: user
+        enabled: true
+        daemon_reload: true
+      when: not ansible_check_mode

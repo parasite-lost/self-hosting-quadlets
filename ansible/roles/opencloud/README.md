@@ -3,7 +3,8 @@
 OpenCloud is a cloud storage solution. Accounts are automatically provisioned
 via Authelia.
 
-Collabora Online provides an online office suite integrated with OpenCloud.
+Collabora Online provides an online office suite integrated with OpenCloud. For
+security reasons Collabora runs under its own user.
 
 ## Upgrades
 
@@ -11,6 +12,22 @@ Upgrade guide: https://docs.opencloud.eu/docs/admin/maintenance/upgrade/upgrade-
 
 * run `opencloud init --diff` in a temporary container with the config directory mounted
 * check for patches to apply and apply them
+
+## Architecture
+
+### Collabora integration
+
+Since Collabora can process potentially malicous files imported by users it is
+confined to its own user. This prevents Collabora from having access to
+OpenCloud's internal ports and services; while this could have been achieved
+with kicking it out of OpenCloud's pod having a separate user also guards against
+container escape and a compromised Collabora gaining access to OpenCloud's
+credentials as well as internal services.
+
+The host's ports (typically 9980 and 9200) on the loopback interface are used
+where possible to enable communication between OpenCloud and Collabora to avoid
+the extra hop via the reverse proxy (the only other party that could read the
+traffic on those ports anyways).
 
 ## Configuration
 
@@ -45,11 +62,11 @@ Required configuration parameters:
 OpenCloud seems to be connecting to itself, so guarding behind Authelia does not
 work without some exception policy in Authelia. OpenCloud itself can also not be
 configured to use an mTLS certificate. Using an optional mTLS certificate breaks
-OpenCloud desktop browsers as they rarely use certificates when they are
+OpenCloud on desktop browsers as they rarely use certificates when they are
 optional (OpenCloud becomes completely unusable).
 
 What is needed is mTLS enforcement based on IP address: external IPs connecting
-must use a mTLS certificate, local connection (OpenCloud to itself) do require
+must use an mTLS certificate, local connection (OpenCloud to itself) do require
 an mTLS certificate. This is solved by injecting a remote_ip matcher into the
 json caddy configuration.
 

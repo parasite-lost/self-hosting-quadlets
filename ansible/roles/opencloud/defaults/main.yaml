@@ -1,15 +1,15 @@
 ---
-opencloud_user_name: "opencloud"
-opencloud_user_home: "/home/{{ opencloud_user_name }}"
+opencloud_opencloud_user_name: "opencloud"
+opencloud_opencloud_user_home: "/home/{{ opencloud_opencloud_user_name }}"
+opencloud_collabora_user_name: "collabora"
+opencloud_collabora_user_home: "/home/{{ opencloud_collabora_user_name }}"
 
-opencloud_cloud_subdomain: "opencloud"
-opencloud_cloud_port: "9200"
+opencloud_opencloud_subdomain: "opencloud"
+opencloud_opencloud_port: "9200"
 opencloud_collabora_subdomain: "collabora"
 opencloud_collabora_port: "9980"
 
-opencloud_cloud_version: "8.1"
+opencloud_opencloud_version: "8.1"
 opencloud_collabora_version: "26.04.4.2.1"
 
-opencloud_dir_data: "{{ opencloud_user_home }}/data"
-opencloud_dir_config_opencloud: "{{ opencloud_user_home }}/config/opencloud"
-opencloud_dir_config_collabora: "{{ opencloud_user_home }}/config/collabora"
+opencloud_dir_data_opencloud: "{{ opencloud_opencloud_user_home }}/data/opencloud"

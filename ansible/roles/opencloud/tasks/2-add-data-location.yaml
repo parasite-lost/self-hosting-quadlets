@@ -1,8 +1,10 @@
 ---
-- name: Add opencloud data location
+- name: Add data locations
   become: true
-  become_user: "{{ opencloud_user_name }}"
-  ansible.builtin.file:
-    path: "{{ opencloud_dir_data }}"
-    state: directory
-    mode: u=rwx,g=rx,o=
+  become_user: "{{ opencloud_opencloud_user_name }}"
+  block:
+    - name: Add opencloud data location
+      ansible.builtin.file:
+        path: "{{ opencloud_dir_data_opencloud }}"
+        state: directory
+        mode: u=rwx,g=rx,o=

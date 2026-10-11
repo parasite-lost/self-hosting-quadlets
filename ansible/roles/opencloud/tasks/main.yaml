@@ -10,11 +10,14 @@
     - name: Add configuration
       ansible.builtin.import_tasks: 3-add-config.yaml
 
-    - name: Create quadlets
-      ansible.builtin.import_tasks: 4-create-quadlets.yaml
+    - name: Create opencloud quadlets
+      ansible.builtin.import_tasks: 4-create-opencloud-quadlets.yaml
+
+    - name: Create collabora quadlets
+      ansible.builtin.import_tasks: 5-create-collabora-quadlets.yaml
 
     - name: Add caddy integration
-      ansible.builtin.import_tasks: 5-add-caddy-integration.yaml
+      ansible.builtin.import_tasks: 6-add-caddy-integration.yaml
 
     - name: Add authelia configuration
-      ansible.builtin.import_tasks: 6-add-authelia-integration.yaml
+      ansible.builtin.import_tasks: 7-add-authelia-integration.yaml

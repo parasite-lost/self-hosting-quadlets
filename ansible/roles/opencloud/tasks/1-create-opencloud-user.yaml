@@ -5,6 +5,16 @@
     tasks_from: create-service-user.yaml
   tags: always
   vars:
-    common_user_name: "{{ opencloud_user_name }}"
-    common_user_home: "{{ opencloud_user_home }}"
+    common_user_name: "{{ opencloud_opencloud_user_name }}"
+    common_user_home: "{{ opencloud_opencloud_user_home }}"
+    common_with_systemd_units: false
+
+- name: Create collabora user
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: create-service-user.yaml
+  tags: always
+  vars:
+    common_user_name: "{{ opencloud_collabora_user_name }}"
+    common_user_home: "{{ opencloud_collabora_user_home }}"
     common_with_systemd_units: false

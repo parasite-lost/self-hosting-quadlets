@@ -10,18 +10,10 @@
   tags:
     - validate
 
-- name: Create opencloud quadlets
+- name: Create collabora quadlets
   become: true
-  become_user: "{{ opencloud_user_name }}"
+  become_user: "{{ opencloud_collabora_user_name }}"
   block:
-    - name: Create opencloud app container
-      ansible.builtin.template:
-        src: opencloud-server.container.j2
-        dest: "{{ opencloud_user_home }}/.config/containers/systemd/opencloud-server.container"
-        mode: u=rw,g=r,o=
-      notify:
-        - Restart opencloud
-
     - name: Create collabora admin password podman secret
       containers.podman.podman_secret:
         name: collabora_admin_password
@@ -64,27 +56,28 @@
                 force: true
               no_log: true
               notify:
-                - Restart opencloud
+                - Restart collabora
 
-    - name: Create opencloud collabora container
+    - name: Create Collabora CODE container
       ansible.builtin.template:
-        src: opencloud-collabora.container.j2
-        dest: "{{ opencloud_user_home }}/.config/containers/systemd/opencloud-collabora.container"
+        src: collabora-code.container.j2
+        dest: "{{ opencloud_collabora_user_home }}/.config/containers/systemd/collabora-code.container"
         mode: u=rw,g=r,o=
       notify:
-        - Restart opencloud
+        - Restart collabora
 
-    - name: Create opencloud pod
+    - name: Create collabora pod
       ansible.builtin.template:
-        src: opencloud.pod.j2
-        dest: "{{ opencloud_user_home }}/.config/containers/systemd/opencloud.pod"
+        src: collabora.pod.j2
+        dest: "{{ opencloud_collabora_user_home }}/.config/containers/systemd/collabora.pod"
         mode: u=rw,g=r,o=
       notify:
-        - Restart opencloud
+        - Restart collabora
 
-    - name: Enable opencloud
+    - name: Enable collabora
       ansible.builtin.systemd_service:
-        unit: "opencloud-pod.service"
+        unit: "collabora-pod.service"
         scope: user
         enabled: true
         daemon_reload: true
+      when: not ansible_check_mode

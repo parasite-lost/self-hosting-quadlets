@@ -10,17 +10,11 @@
 
 - name: Add opencloud config
   become: true
-  become_user: "{{ opencloud_user_name }}"
+  become_user: "{{ opencloud_opencloud_user_name }}"
   block:
     - name: Add config folder for opencloud
       ansible.builtin.file:
         path: "{{ opencloud_dir_config_opencloud }}"
-        state: directory
-        mode: u=rwx,g=rx,o=
-
-    - name: Add config folder for collabora
-      ansible.builtin.file:
-        path: "{{ opencloud_dir_config_collabora }}"
         state: directory
         mode: u=rwx,g=rx,o=
 
@@ -29,3 +23,5 @@
         src: "csp.yaml.j2"
         dest: "{{ opencloud_dir_config_opencloud }}/csp.yaml"
         mode: u=rw,g=r,o=
+      notify:
+        - Restart opencloud
