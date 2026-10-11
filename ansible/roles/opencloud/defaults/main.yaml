@@ -11,5 +11,7 @@ opencloud_collabora_port: "9980"
 
 opencloud_opencloud_version: "8.1"
 opencloud_collabora_version: "26.04.4.2.1"
+opencloud_radicale_version: "latest"
 
 opencloud_dir_data_opencloud: "{{ opencloud_opencloud_user_home }}/data/opencloud"
+opencloud_dir_data_radicale: "{{ opencloud_opencloud_user_home }}/data/radicale"

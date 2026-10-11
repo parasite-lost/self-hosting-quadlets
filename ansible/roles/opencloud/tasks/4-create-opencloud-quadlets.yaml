@@ -20,6 +20,14 @@
       notify:
         - Restart opencloud
 
+    - name: Create opencloud radicale container
+      ansible.builtin.template:
+        src: opencloud-radicale.container.j2
+        dest: "{{ opencloud_opencloud_user_home }}/.config/containers/systemd/opencloud-radicale.container"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart opencloud
+
     - name: Create opencloud pod
       ansible.builtin.template:
         src: opencloud.pod.j2

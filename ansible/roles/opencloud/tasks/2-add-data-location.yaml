@@ -8,3 +8,9 @@
         path: "{{ opencloud_dir_data_opencloud }}"
         state: directory
         mode: u=rwx,g=rx,o=
+
+    - name: Add radicale data location
+      ansible.builtin.file:
+        path: "{{ opencloud_dir_data_radicale }}"
+        state: directory
+        mode: u=rwx,g=rx,o=

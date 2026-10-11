@@ -1,0 +1,20 @@
+[Unit]
+Description=OpenCloud Radicale container
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Container]
+Pod=opencloud.pod
+Label=app=opencloud
+ContainerName=opencloud-radicale
+
+Image=docker.io/opencloudeu/radicale:{{ opencloud_radicale_version }}
+#AutoUpdate=registry
+
+# same as opencloud-server
+User=0
+
+Volume={{ opencloud_dir_config_radicale }}/config:/etc/radicale/config:ro,Z
+Volume={{ opencloud_dir_data_radicale }}:/var/lib/radicale:Z

@@ -5,5 +5,7 @@ opencloud_collabora_gid: '1001'
 
 # configuration directories
 opencloud_dir_config_opencloud: "{{ opencloud_opencloud_user_home }}/config/opencloud"
+opencloud_dir_config_radicale: "{{ opencloud_opencloud_user_home }}/config/radicale"
+
 # can be overridden with --extra-vars '{"opencloud_refresh_credential": true}'
 opencloud_refresh_credential: false

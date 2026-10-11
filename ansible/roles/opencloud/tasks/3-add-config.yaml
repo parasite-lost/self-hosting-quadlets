@@ -25,3 +25,25 @@
         mode: u=rw,g=r,o=
       notify:
         - Restart opencloud
+
+    - name: Add config folder for radicale
+      ansible.builtin.file:
+        path: "{{ opencloud_dir_config_radicale }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Add opencloud proxy configuration
+      ansible.builtin.copy:
+        src: "proxy.yaml"
+        dest: "{{ opencloud_dir_config_opencloud }}/proxy.yaml"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart opencloud
+
+    - name: Add radicale configuration
+      ansible.builtin.copy:
+        src: "radicale-config"
+        dest: "{{ opencloud_dir_config_radicale }}/config"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart opencloud

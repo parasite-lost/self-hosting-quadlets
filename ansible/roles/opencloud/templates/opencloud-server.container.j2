@@ -1,5 +1,7 @@
 [Unit]
 Description=Opencloud server container
+After=opencloud-radicale.service
+Wants=opencloud-radicale.service
 
 [Service]
 Restart=always
@@ -11,6 +13,7 @@ ContainerName=opencloud-server
 
 Image=docker.io/opencloudeu/opencloud-rolling:{{ opencloud_opencloud_version }}
 
+# same as opencloud-radicale
 User=0
 
 Entrypoint=/bin/bash
@@ -26,6 +29,9 @@ Environment=PROXY_TLS=false
 # do not run authentication service -> integrate authelia instead
 Environment=OC_EXCLUDE_RUN_SERVICES=idp
 Environment=OC_ADD_RUN_SERVICES=collaboration
+
+# app-auth for app tokens (needed for radicale)
+Environment=PROXY_ENABLE_APP_AUTH=true
 
 # collaboration
 #Environment=COLLABORATION_WOPI_SRC=https://{{ opencloud_opencloud_subdomain }}.{{ host_maindomain }}

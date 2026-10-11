@@ -6,6 +6,10 @@ via Authelia.
 Collabora Online provides an online office suite integrated with OpenCloud. For
 security reasons Collabora runs under its own user.
 
+Radicale provides CardDAV and CalDAV service integrated with OpenCloud. Create an
+app token for Radicale in OpenCloud and connect for example with DAVx5 (supports
+mTLS).
+
 ## Upgrades
 
 Upgrade guide: https://docs.opencloud.eu/docs/admin/maintenance/upgrade/upgrade-guide
@@ -56,6 +60,13 @@ Required configuration parameters:
 
 * `opencloud_collabora_admin_user`: admin user name
 * `opencloud_collabora_admin_password`: admin password
+
+### Radicale
+
+No configuration parameters needed.
+
+Configuration same as in OpenCloud docker-compose setup (except Radicale
+listening only on port 127.0.0.1)
 
 ## mTLS
 
