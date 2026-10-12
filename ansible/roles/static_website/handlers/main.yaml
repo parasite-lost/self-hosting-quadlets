@@ -7,6 +7,7 @@
     state: restarted
     scope: user
     daemon_reload: true
+  when: not ansible_check_mode
 
 - name: Enable static website service
   become: true

@@ -7,6 +7,7 @@
     state: reloaded
     scope: user
   changed_when: true
+  when: not ansible_check_mode
 
 - name: Restart caddy
   become: true
@@ -17,3 +18,4 @@
     scope: user
     daemon_reload: true
   changed_when: true
+  when: not ansible_check_mode

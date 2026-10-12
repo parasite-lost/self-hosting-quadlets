@@ -7,3 +7,4 @@
     state: restarted
     scope: user
     daemon_reload: true
+  when: not ansible_check_mode

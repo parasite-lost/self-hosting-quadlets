@@ -22,15 +22,16 @@
         home: "{{ common_user_home }}"
         password: '!'
       diff: true
+      check_mode: false
 
     - name: Enable lingering for {{ common_user_name }}
       ansible.builtin.command:
         cmd: "loginctl enable-linger {{ common_user_name }}"
       changed_when: false
+      check_mode: false
 
 - name: Create systemd user and quadlet folders
   become: true
-  become_user: "{{ common_user_name }}"
   block:
     - name: Create systemd user folder for {{ common_user_name }}
       when: common_with_systemd_units
@@ -38,6 +39,7 @@
         path: "{{ common_user_home }}/.config/systemd/user"
         state: directory
         mode: u=rwx,g=rx,o=
+        owner: "{{ common_user_name }}"
 
     - name: Create quadlet folder for {{ common_user_name }}
       when: common_with_quadlets
@@ -45,3 +47,4 @@
         path: "{{ common_user_home }}/.config/containers/systemd"
         state: directory
         mode: u=rwx,g=rx,o=
+        owner: "{{ common_user_name }}"

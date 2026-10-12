@@ -8,3 +8,4 @@
     scope: user
     daemon_reload: true
   changed_when: true
+  when: not ansible_check_mode
