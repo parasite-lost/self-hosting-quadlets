@@ -9,7 +9,7 @@ immich_postgres_container: "{{ immich_user_home }}/.config/containers/systemd/{{
 immich_postgres_container_d: "{{ immich_postgres_container }}.d"
 immich_postgres_container_d_credentials: "{{ immich_postgres_container_d }}/credentials.conf"
 
-# can be overridden with --extra-vars '{"immich_refresh_credential": true}'
+# can be overridden with --extra-vars=immich_refresh_credential=true
 immich_refresh_credential: false
 _immich_app_database_password_name: db_password
 _immich_db_database_password_name: db_password

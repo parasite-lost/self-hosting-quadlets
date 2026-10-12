@@ -150,11 +150,11 @@ Then run with `--check` or `--check --diff` to perform a dry-run.
 
 Several roles have a variable to force rewriting credentials; this is
 particularly necessary when rotating credentials; for example to rewrite
-authelia's credentials use `--extra-vars '{"authelia_refresh_credential": true}'`.
+authelia's credentials use `--extra-vars=authelia_refresh_credential=true`.
 The reason for this is that systemd credential encryption is not idempotent
 so if the credential already exists it is not written again to ensure the
 ansible playbook is idempotent. If you want refresh all credentials of all roles
-use `--extra-vars '{"all_refresh_credential": true}'` which is honored by every
+use `--extra-vars=all_refresh_credential=true` which is honored by every
 role.
 
 # (Un)Licensing

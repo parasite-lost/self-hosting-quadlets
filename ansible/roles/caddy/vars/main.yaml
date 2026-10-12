@@ -22,7 +22,7 @@ caddy_container: "{{ caddy_user_home }}/.config/containers/systemd/{{ caddy_cont
 caddy_container_d: "{{ caddy_container }}.d"
 caddy_port_mapping_dropin: "{{ caddy_container_d }}/port-mapping.conf"
 
-# can be overridden with --extra-vars '{"caddy_refresh_credential": true}'
+# can be overridden with --extra-vars=caddy_refresh_credential=true
 caddy_refresh_credential: false
 # remember when credential is generated - so it is mounted into the container
 _caddy_has_credentials: false

@@ -31,7 +31,10 @@
       register: ddns_credential_dropin
 
     - name: Create credential
-      when: all_refresh_credential or ddns_refresh_credential or not ddns_credential_dropin.stat.exists
+      when: >-
+        not ddns_credential_dropin.stat.exists
+        or all_refresh_credential | default(false) | bool
+        or ddns_refresh_credential | default(false) | bool
       block:
         - name: Generate credential api token
           ansible.builtin.command:

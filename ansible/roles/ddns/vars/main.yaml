@@ -4,6 +4,6 @@ ddns_user_service: "{{ ddns_user_home }}/.config/systemd/user/{{ ddns_user_servi
 ddns_user_service_d: "{{ ddns_user_service }}.d"
 ddns_user_service_d_credential: "{{ ddns_user_service_d }}/credentials.conf"
 
-# ddns_refresh_credential can be overridden with --extra-vars
+# ddns_refresh_credential can be overridden with --extra-vars=ddns_refresh_credential=true
 ddns_refresh_credential: false
 _ddns_credential_api_token_name: token

@@ -8,7 +8,7 @@ authelia_postgres_container: "{{ authelia_user_home }}/.config/containers/system
 authelia_postgres_container_d: "{{ authelia_postgres_container }}.d"
 authelia_postgres_container_d_credentials: "{{ authelia_postgres_container_d }}/credentials.conf"
 
-# can be overridden with --extra-vars '{"authelia_refresh_credential": true}'
+# can be overridden with --extra-vars=authelia_refresh_credential=true
 authelia_refresh_credential: false
 # credential names
 _authelia_smtp_password_name: smtp-token
