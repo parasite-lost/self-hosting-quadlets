@@ -35,6 +35,24 @@ traffic on those ports anyways).
 
 ## Configuration
 
+### Authelia OIDC Integration
+
+OpenCloud is configured to expect Authelia to provide the `opencloud_scope`.
+This scope contains claims for `opencloud_role` (one of `opencloudAdmin`,
+`opencloudUser`, `opencloudGuest`) and `opencloud_groups` (list of group names
+of your choice). The `opencloud_role` must be defined in Authelia's user database under `extra`, e.g.
+
+```
+users:
+  my_user:
+    password: ...
+    displayname: ...
+    email: ...
+    extra:
+      opencloud_role: opencloudUser
+      opencloud_groups: [my-group, other-group]
+```
+
 ### OpenCloud
 
 * https://docs.opencloud.eu/docs/admin/
