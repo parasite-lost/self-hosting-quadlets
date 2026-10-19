@@ -7,7 +7,7 @@
     - name: Create Caddyfile
       ansible.builtin.import_tasks: 2-create-caddyfile.yaml
 
-    - name: Open http, https, http3 ports for caddy
+    - name: Open http, https ports for caddy
       ansible.builtin.import_tasks: 3-add-caddy-firewall-rules.yaml
 
     - name: Create quadlets

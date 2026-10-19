@@ -20,19 +20,17 @@ ACTION="$1"
 
 case "${ACTION}" in
     on)
-        echo "Open ports for http/https/http3"
+        echo "Open ports for http/https"
         firewall-cmd --permanent --add-service=http
         firewall-cmd --permanent --add-service=https
-        firewall-cmd --permanent --add-service=http3
         echo "Reloading firewall..."
         firewall-cmd --reload
         echo "Ports are now OPEN."
         ;;
     off)
-        echo "Close ports for http/https/http3"
+        echo "Close ports for http/https"
         firewall-cmd --permanent --remove-service=http
         firewall-cmd --permanent --remove-service=https
-        firewall-cmd --permanent --remove-service=http3
         echo "Reloading firewall..."
         firewall-cmd --reload
         echo "Ports are now CLOSED."

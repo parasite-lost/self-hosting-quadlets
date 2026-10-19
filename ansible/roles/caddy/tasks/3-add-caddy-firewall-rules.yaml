@@ -1,5 +1,5 @@
 ---
-- name: Allow unprivileged caddy to bind to http/https/http3 ports
+- name: Allow unprivileged caddy to bind to http/https ports
   become: true
   ansible.posix.sysctl:
     name: net.ipv4.ip_unprivileged_port_start
@@ -7,7 +7,7 @@
     state: present
     reload: true
 
-- name: Open ports for http/https/http3
+- name: Open ports for http/https
   become: true
   ansible.posix.firewalld:
     service: "{{ item }}"
@@ -17,7 +17,6 @@
   loop:
     - http
     - https
-    - http3
 
 - name: Add firewall management script
   become: true

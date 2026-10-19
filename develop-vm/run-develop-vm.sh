@@ -13,7 +13,7 @@ qemu-system-x86_64 \
   -cpu host \
   -enable-kvm \
   -drive file="$image",if=virtio \
-  -netdev user,id=n1,hostfwd=tcp::2222-:22,hostfwd=tcp::8025-:8025,hostfwd=tcp::8080-:80,hostfwd=tcp::8443-:443,hostfwd=udp::8443-:443 \
+  -netdev user,id=n1,hostfwd=tcp::2222-:22,hostfwd=tcp::8025-:8025,hostfwd=tcp::8080-:80,hostfwd=tcp::8443-:443 \
   -device virtio-net-pci,netdev=n1 \
   -monitor telnet::45454,server,nowait \
   -nographic \
