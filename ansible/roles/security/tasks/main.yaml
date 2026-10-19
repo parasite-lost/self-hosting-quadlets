@@ -23,10 +23,20 @@
           Password authentication was NOT disabled to prevent locking you out.
       when: security_ssh_key_check.rc != 0
 
-    - name: Prevent password-based SSH login
+    - name: Harden sshd
       when: security_ssh_key_check.rc == 0
       become: true
-      ansible.builtin.copy:
-        src: "60-no-passwd.conf"
-        dest: "/etc/ssh/sshd_config.d/60-no-passwd.conf"
+      ansible.builtin.template:
+        src: "60-hardening.conf.j2"
+        dest: "/etc/ssh/sshd_config.d/60-hardening.conf"
         mode: u=r,g=,o=
+
+    - name: Block cockpit
+      become: true
+      ansible.posix.firewalld:
+        # firewall-cmd --remove-service=cockpit --permanent
+        service: cockpit
+        permanent: true
+        state: disabled
+        # reload firewall
+        immediate: true
