@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 # Docs: https://developers.cloudflare.com/api/operations/dns-records-for-a-zone-update-dns-record
 
 # Get the Zone ID from: https://dash.cloudflare.com/<account_id>/<domain.name>
@@ -15,7 +17,7 @@ API_TOKEN=$(cat "$CREDENTIALS_DIRECTORY/{{ _ddns_credential_api_token_name }}")
 # Desired domain name
 DOMAIN_NAME="*.{{ host_maindomain }}"
 
-_JSON_FILE=$HOME/ipv4-cloudflare-ddns-update.json
+_JSON_FILE="$HOME/ipv4-cloudflare-ddns-update.json"
 
 # Get previous IP address
 _PREV_IP_FILE="$HOME/ipv4-previous.txt"
@@ -27,6 +29,18 @@ fi
 
 # Get current IP address
 _IP=$(dig ch txt whoami.cloudflare @1.0.0.1 +short | awk -F'"' '{print $2}')
+
+if [[ -z "$_IP" ]]; then
+  echo "Error: Failed to retrieve IP address. Aborting script." >&2
+  exit 1
+fi
+
+_octet='25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]'
+_ipv4_regex="^${_octet}\.${_octet}\.${_octet}\.${_octet}$"
+if [[ ! $_IP =~ $_ipv4_regex ]]; then
+  echo "Error: invalid IP address: $_IP"
+  exit 1
+fi
 
 # Get current time for logging
 _CURRENT_TIME=$(TZ="{{ host_time_zone }}" date +"%Y-%m-%d %H:%M:%S")
@@ -49,6 +63,9 @@ EOF
 )
 
 curl --request PUT \
+    --fail \
+    --silent \
+    --show-error \
     --url https://api.cloudflare.com/client/v4/zones/$ZONE_ID/dns_records/$RECORD_ID \
     --header 'Content-Type: application/json' \
     --header "Authorization: Bearer $API_TOKEN" \
