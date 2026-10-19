@@ -1,14 +1,4 @@
 ---
-- name: Reload caddy
-  become: true
-  become_user: "{{ caddy_user_name }}"
-  ansible.builtin.systemd_service:
-    service: "{{ caddy_service_unit }}"
-    state: reloaded
-    scope: user
-  changed_when: true
-  when: not ansible_check_mode
-
 - name: Restart caddy
   become: true
   become_user: "{{ caddy_user_name }}"

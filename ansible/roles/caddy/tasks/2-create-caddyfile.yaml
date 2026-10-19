@@ -19,12 +19,6 @@
         state: directory
         mode: u=rwx,g=rx,o=
 
-    - name: Create Caddyfile staging directory
-      ansible.builtin.file:
-        path: "{{ caddy_dir_caddyfile_config }}"
-        state: directory
-        mode: u=rwx,g=rx,o=
-
     - name: Create caddy snippet dropin directory
       ansible.builtin.file:
         path: "{{ caddy_dir_snippet_d }}"
@@ -42,18 +36,24 @@
         src: "default-site-settings.caddy.j2"
         dest: "{{ caddy_dir_snippet_d }}/default-site-settings.caddy"
         mode: u=rw,g=r,o=
+      notify:
+        - Reload caddy
 
     - name: Create naked reverse proxy snippet
       ansible.builtin.template:
         src: "naked.caddy.j2"
         dest: "{{ caddy_dir_snippet_d }}/naked.caddy"
         mode: u=rw,g=r,o=
+      notify:
+        - Reload caddy
 
     - name: Create mTLS guard snippet (mtls_guard)
       ansible.builtin.template:
         src: "mtls-guard.caddy.j2"
         dest: "{{ caddy_dir_snippet_d }}/mtls-guard.caddy"
         mode: u=rw,g=r,o=
+      notify:
+        - Reload caddy
 
     - name: Create caddy dns configuration directory
       ansible.builtin.template:
@@ -64,5 +64,7 @@
     - name: Create Caddyfile
       ansible.builtin.template:
         src: Caddyfile.j2
-        dest: "{{ caddy_dir_caddyfile_config }}/Caddyfile"
+        dest: "{{ caddy_dir_config }}/Caddyfile"
         mode: u=rw,g=r,o=
+      notify:
+        - Reload caddy

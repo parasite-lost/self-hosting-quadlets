@@ -69,7 +69,6 @@ environment variables; but I'll try to avoid such applications.
 
 ## TODO:
 
-* exploration of caddy config (json / adapt + inject): [caddy_json_config](ansible/roles/caddy_json_config/)
 * filter groups for OIDC claims: https://www.authelia.com/integration/openid-connect/openid-connect-1.0-claims/
 * general ansible project cleanup
 * reuse more tasks (create quadlet file, create systemd unit, ...)

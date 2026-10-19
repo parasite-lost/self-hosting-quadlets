@@ -86,19 +86,6 @@ No configuration parameters needed.
 Configuration same as in OpenCloud docker-compose setup (except Radicale
 listening only on port 127.0.0.1)
 
-## mTLS
-
-OpenCloud seems to be connecting to itself, so guarding behind Authelia does not
-work without some exception policy in Authelia. OpenCloud itself can also not be
-configured to use an mTLS certificate. Using an optional mTLS certificate breaks
-OpenCloud on desktop browsers as they rarely use certificates when they are
-optional (OpenCloud becomes completely unusable).
-
-What is needed is mTLS enforcement based on IP address: external IPs connecting
-must use an mTLS certificate, local connection (OpenCloud to itself) do require
-an mTLS certificate. This is solved by injecting a remote_ip matcher into the
-json caddy configuration.
-
 ## Storage Layout
 
 The user space storage layout of OpenCloud is set to

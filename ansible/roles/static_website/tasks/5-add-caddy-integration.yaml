@@ -17,6 +17,8 @@
         src: "static.caddy.j2"
         dest: "{{ caddy_dir_caddyfile_subdomain_d }}/static.caddy"
         mode: u=rw,g=r,o=
+      notify:
+        - Reload caddy
 
     - name: Add caddy pasta port mapping # noqa: var-naming
       ansible.builtin.set_fact:

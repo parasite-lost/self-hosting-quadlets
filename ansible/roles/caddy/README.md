@@ -16,9 +16,6 @@ Configuration is done via modular Caddyfile.
 Some finalization steps are necessary after all backend service roles have been
 run: [caddy_finalization](../caddy_finalization/README.md).
 
-Reasons:
-
-* Caddyfile does not support elaborate mTLS policies and needs to be converted
-  to json first (builtin caddy functionality).
-* To keep the configuration modular additional data on the backend services'
-  ports are needed before the configuration for the caddy container is complete
+Reason: To keep the configuration modular additional data on the backend
+services' ports are needed before the configuration for the caddy container is
+complete.
