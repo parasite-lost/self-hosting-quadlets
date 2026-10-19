@@ -6,4 +6,4 @@
     src: port-mapping.conf.j2
     dest: "{{ caddy_port_mapping_dropin }}"
     mode: u=rw,g=r,o=
-  notify: Schedule caddy restart
+  notify: Restart caddy
