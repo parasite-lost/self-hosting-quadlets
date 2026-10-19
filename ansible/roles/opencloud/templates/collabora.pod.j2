@@ -5,7 +5,7 @@ Description=Pod for collabora
 PodName=collabora
 Label=app=collabora
 PublishPort=127.0.0.1:{{ opencloud_collabora_port }}:9980
-PodmanArgs=--network=pasta:-T,443,-T,{{ opencloud_opencloud_port }}
+PodmanArgs=--network=pasta:-T,{{ opencloud_opencloud_port }}
 
 [Install]
 WantedBy=default.target
