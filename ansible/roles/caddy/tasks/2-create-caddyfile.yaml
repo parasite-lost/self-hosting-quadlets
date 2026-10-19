@@ -25,7 +25,7 @@
         state: directory
         mode: u=rwx,g=rx,o=
 
-    - name: Create caddy configuration dropin directory for explicit subdomain handler
+    - name: Create caddy configuration dropin directory for subdomain handler
       ansible.builtin.file:
         path: "{{ caddy_dir_caddyfile_subdomain_d }}"
         state: directory

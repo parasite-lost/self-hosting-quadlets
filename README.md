@@ -69,7 +69,6 @@ environment variables; but I'll try to avoid such applications.
 
 ## TODO:
 
-* filter groups for OIDC claims: https://www.authelia.com/integration/openid-connect/openid-connect-1.0-claims/
 * general ansible project cleanup
 * reuse more tasks (create quadlet file, create systemd unit, ...)
 * custom caddy image builds: https://caddy.community/t/how-to-guide-caddy-v2-cloudflare-dns-01-via-docker/8007

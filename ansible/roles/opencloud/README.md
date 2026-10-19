@@ -29,9 +29,9 @@ container escape and a compromised Collabora gaining access to OpenCloud's
 credentials as well as internal services.
 
 The host's ports (typically 9980 and 9200) on the loopback interface are used
-where possible to enable communication between OpenCloud and Collabora to avoid
-the extra hop via the reverse proxy (the only other party that could read the
-traffic on those ports anyways).
+to enable communication between OpenCloud and Collabora while avoiding the extra
+hop via the reverse proxy (not visible to any other service correctly set up with
+pasta port mappings).
 
 ## Configuration
 
@@ -65,7 +65,8 @@ first startup.
 
 The only thing needed to configure is the mTLS certificate:
 
-* `opencloud_root_ca`: path to mTLS root CA certificate to guard OpenCloud
+* `opencloud_root_ca`: path to mTLS root CA certificate to guard OpenCloud and
+  Collabora Online
 
 ### Collabora Online
 
