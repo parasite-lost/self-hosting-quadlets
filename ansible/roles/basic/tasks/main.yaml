@@ -13,3 +13,10 @@
         name: "{{ item }}"
         state: present
       loop: "{{ basic_admin_packages }}"
+
+    - name: Add global fzf integration
+      ansible.builtin.copy:
+        src: fzf.sh
+        dest: /etc/profile.d/fzf-integration.sh
+        mode: u=rw,g=r,o=r
+        owner: root
