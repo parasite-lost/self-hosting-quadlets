@@ -32,8 +32,8 @@
         mode: u=rwx,g=rx,o=
 
     - name: Create default site settings snippet
-      ansible.builtin.template:
-        src: "default-site-settings.caddy.j2"
+      ansible.builtin.copy:
+        src: "default-site-settings.caddy"
         dest: "{{ caddy_dir_snippet_d }}/default-site-settings.caddy"
         mode: u=rw,g=r,o=
       notify:
