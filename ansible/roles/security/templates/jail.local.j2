@@ -1,0 +1,11 @@
+[DEFAULT]
+bantime = {{ security_fail2ban_bantime }}
+findtime = {{ security_fail2ban_findtime }}
+maxretry = {{ security_fail2ban_maxretry }}
+bantime.increment = true
+bantime.overalljails = true
+bantime.maxtime = {{ security_fail2ban_bantime_maxtime }}
+ignoreip = 127.0.0.1/8 ::1 {{ [security_fail2ban_ignoreip] | flatten | join(' ') }}
+backend = systemd
+# jails choose all ports with: banaction = %(banaction_allports)s
+banaction_allports = firewallcmd-rich-allports

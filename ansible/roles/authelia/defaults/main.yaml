@@ -1,3 +1,5 @@
 ---
 authelia_user_name: "authelia"
 authelia_user_home: "/home/{{ authelia_user_name }}"
+
+authelia_fail2ban_jail: true

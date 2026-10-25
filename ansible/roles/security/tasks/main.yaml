@@ -1,4 +1,15 @@
 ---
+- name: Validate required variables are defined
+  ansible.builtin.assert:
+    that:
+      - security_fail2ban_ignoreip is defined
+      - security_fail2ban_ignoreip is not mapping
+      - security_fail2ban_ignoreip | length > 0
+    fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
+    quiet: true
+  tags:
+    - validate
+
 - name: Check if key-based SSH login is available, then disable password-based SSH login
   block:
     - name: Check key-based SSH login is available
@@ -34,8 +45,57 @@
       notify:
         - Reload sshd
 
+- name: Harden system security
+  become: true
+  block:
+    - name: Install fail2ban (without sendmail)
+      ansible.builtin.dnf:
+        name:
+          - fail2ban-firewalld
+          - fail2ban-systemd
+        state: present
+
+    - name: Configure fail2ban
+      ansible.builtin.template:
+        src: "fail2ban.local.j2"
+        dest: "/etc/fail2ban/fail2ban.local"
+        mode: u=rw,g=r,o=r
+      notify:
+        - Reload fail2ban
+
+    - name: Add fail2ban action to ban on all ports
+      ansible.builtin.copy:
+        src: "firewallcmd-rich-allports.conf"
+        dest: "/etc/fail2ban/action.d/firewallcmd-rich-allports.conf"
+        mode: u=rw,g=r,o=r
+      notify:
+        - Reload fail2ban
+
+    - name: Configure fail2ban jail defaults
+      ansible.builtin.template:
+        src: "jail.local.j2"
+        dest: "/etc/fail2ban/jail.local"
+        mode: u=rw,g=r,o=r
+      notify:
+        - Reload fail2ban
+
+    - name: Configure fail2ban sshd jail
+      ansible.builtin.template:
+        src: "sshd.local.j2"
+        dest: "/etc/fail2ban/jail.d/sshd.local"
+        mode: u=rw,g=r,o=r
+      notify:
+        - Reload fail2ban
+
+    - name: Enable fail2ban
+      ansible.builtin.systemd:
+        service: fail2ban
+        state: started
+        enabled: true
+        daemon_reload: true
+      when: not ansible_check_mode
+
     - name: Block cockpit
-      become: true
       ansible.posix.firewalld:
         # firewall-cmd --remove-service=cockpit --permanent
         service: cockpit

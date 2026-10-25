@@ -1,0 +1,9 @@
+---
+security_fail2ban_sshd_jail: true
+security_fail2ban_maxretry: 3
+security_fail2ban_findtime: 1h
+security_fail2ban_bantime: 1d
+# bans of repeat offenders grow (across all jails) up to this time
+security_fail2ban_bantime_maxtime: 4w
+# keep ban history at least as long as bantime_maxtime
+security_fail2ban_dbpurgeage: 30d

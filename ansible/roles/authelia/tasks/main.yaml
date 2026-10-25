@@ -21,3 +21,6 @@
 
     - name: Add development mail server (development only)
       ansible.builtin.import_tasks: 7-development-mail-server.yaml
+
+    - name: Add fail2ban integration
+      ansible.builtin.import_tasks: 8-add-fail2ban-integration.yaml

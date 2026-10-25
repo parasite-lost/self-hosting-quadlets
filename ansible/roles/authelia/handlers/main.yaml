@@ -2,3 +2,18 @@
 - name: Schedule authelia restart
   ansible.builtin.set_fact:
     _authelia_restart_needed: true
+
+# using `ansible.builtin.systemd` with `state: reloaded` would also trigger (re)start
+# workaround: 1. get service state 2. reload if it is running
+# `listen`: `Reload fail2ban if running` is the actual handler name to use
+- name: Reload fail2ban if running (check state)
+  ansible.builtin.service_facts:
+  listen: Reload fail2ban if running
+
+- name: Reload fail2ban if running (reload)
+  become: true
+  ansible.builtin.systemd:
+    service: fail2ban
+    state: reloaded
+  when: ansible_facts.services['fail2ban.service'].state | default('') == 'running'
+  listen: Reload fail2ban if running

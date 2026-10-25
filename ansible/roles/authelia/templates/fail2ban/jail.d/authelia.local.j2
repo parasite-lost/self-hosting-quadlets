@@ -1,0 +1,10 @@
+# default settings (bantime, ignoreip, banaction_allports) come from jail.local (security role)
+[authelia]
+enabled = {{ authelia_fail2ban_jail }}
+filter = authelia
+port = http,https
+banaction = %(banaction_allports)s
+# rootless container: logs are in the authelia user's journal
+backend = systemd[journalflags=1]
+# see ContainerName in authelia-app.container.j2
+journalmatch = CONTAINER_NAME=authelia-app

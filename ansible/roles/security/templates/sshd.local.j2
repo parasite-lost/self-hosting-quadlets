@@ -1,0 +1,4 @@
+[sshd]
+enabled = {{ security_fail2ban_sshd_jail | ternary('true', 'false') }}
+mode = aggressive
+banaction = %(banaction_allports)s

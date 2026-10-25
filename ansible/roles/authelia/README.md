@@ -86,6 +86,16 @@ See: https://www.authelia.com/reference/guides/notification-templates/
 * `authelia_otc_html_template`: path to html template for IdentityVerificationOTC emails
 * `authelia_otc_txt_template`: path to txt template for IdentityVerificationOTC emails
 
+### fail2ban
+
+A fail2ban jail (`/etc/fail2ban/jail.d/authelia.local`) is added that bans
+IPs with failed authentication attempts. fail2ban itself is enabled and
+configured (ban times, ignored IPs) by the `security` role; the Authelia jail is
+only active once fail2ban is running.
+
+* `authelia_fail2ban_jail` (default `true`): `true` to enable
+  or `false` to disable the Authelia jail
+
 ## OIDC
 
 https://www.authelia.com/integration/openid-connect/introduction/

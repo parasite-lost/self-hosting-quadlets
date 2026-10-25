@@ -4,3 +4,10 @@
   ansible.builtin.systemd:
     service: sshd
     state: reloaded
+
+- name: Reload fail2ban
+  become: true
+  ansible.builtin.systemd:
+    service: fail2ban
+    state: reloaded
+  when: not ansible_check_mode

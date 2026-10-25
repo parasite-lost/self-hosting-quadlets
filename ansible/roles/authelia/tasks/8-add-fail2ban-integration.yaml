@@ -1,0 +1,28 @@
+---
+# fail2ban is enabled and configured by the security role,
+# this only adds the authelia jail
+- name: Add fail2ban jail for authelia
+  become: true
+  block:
+    - name: Install fail2ban (without sendmail)
+      ansible.builtin.dnf:
+        name:
+          - fail2ban-firewalld
+          - fail2ban-systemd
+        state: present
+
+    - name: Add fail2ban authelia filter
+      ansible.builtin.copy:
+        src: fail2ban/filter.d/authelia.conf
+        dest: /etc/fail2ban/filter.d/authelia.conf
+        mode: u=rw,g=r,o=r
+      notify:
+        - Reload fail2ban if running
+
+    - name: Add fail2ban authelia jail
+      ansible.builtin.template:
+        src: fail2ban/jail.d/authelia.local.j2
+        dest: /etc/fail2ban/jail.d/authelia.local
+        mode: u=rw,g=r,o=r
+      notify:
+        - Reload fail2ban if running
