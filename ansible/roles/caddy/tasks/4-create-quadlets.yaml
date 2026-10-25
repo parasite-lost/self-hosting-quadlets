@@ -86,6 +86,7 @@
                 stdin: "{{ caddy_cloudflare_acme_api_token }}"
               register: caddy_credential_acme_api_token
               changed_when: false
+              no_log: true
 
             - name: Add systemd service credential dropin
               ansible.builtin.copy:

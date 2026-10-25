@@ -7,3 +7,6 @@ local_home: "{{ lookup('env', 'HOME') }}"
 
 # can be overridden with --extra-vars=all_refresh_credential=true
 all_refresh_credential: false
+
+# do not write logs on target
+ansible_no_target_syslog: true

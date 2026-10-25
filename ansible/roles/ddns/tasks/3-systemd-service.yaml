@@ -42,6 +42,7 @@
             stdin: "{{ ddns_api_token }}"
           register: ddns_credential_api_token
           changed_when: false
+          no_log: true
 
         - name: Add systemd service credential dropin
           ansible.builtin.copy:
