@@ -62,8 +62,9 @@
 
     - name: Enable ddns timer
       ansible.builtin.systemd_service:
-        name: ddns.timer
+        service: ddns.timer
         enabled: true
+        state: started
         scope: user
         daemon_reload: true
       when: not ansible_check_mode
