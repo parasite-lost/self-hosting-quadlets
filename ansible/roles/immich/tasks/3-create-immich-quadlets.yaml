@@ -71,11 +71,3 @@
         mode: u=rw,g=r,o=
       notify:
         - Restart immich
-
-    - name: Enable immich
-      ansible.builtin.systemd_service:
-        unit: "immich-pod.service"
-        scope: user
-        enabled: true
-        daemon_reload: true
-      when: not ansible_check_mode

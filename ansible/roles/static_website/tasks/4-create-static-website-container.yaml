@@ -30,4 +30,3 @@
         mode: u=rw,g=r,o=
       notify:
         - Restart static website service
-        - Enable static website service
