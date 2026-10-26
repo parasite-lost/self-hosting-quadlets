@@ -12,16 +12,13 @@ ExecReload=podman exec caddy /usr/bin/caddy reload --config /etc/caddy/Caddyfile
 ContainerName=caddy
 Label=app=caddy
 
-# https://github.com/CaddyBuilds/caddy-cloudflare
-Image={{ caddy_container_image }}
-#AutoUpdate=registry
+# built locally by caddy.build (caddy-build.service). Not referenced as
+# Image=caddy.build (avoid the rebuild stopping caddy during the rebuild)
+Image={{ caddy_image_name }}
+# rebuilt images are rolled out by podman-auto-update.timer
+AutoUpdate=local
 Notify=true
 ReadOnly=true
-#HealthCmd=curl http://localhost:2019/metrics || exit 1
-#HealthInterval=30s
-#HealthTimeout=5s
-#HealthRetries=3
-#HealthStartPeriod=10s
 
 Exec=/usr/bin/caddy run --config /etc/caddy/Caddyfile
 

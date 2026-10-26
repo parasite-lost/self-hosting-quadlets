@@ -1,0 +1,11 @@
+{% if caddy_dns_plugin_module %}
+FROM docker.io/library/caddy:{{ caddy_version }}-builder AS builder
+
+RUN xcaddy build --with {{ caddy_dns_plugin_module }}{{ '@' ~ caddy_dns_plugin_version if caddy_dns_plugin_version }}
+
+FROM docker.io/library/caddy:{{ caddy_version }}
+
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+{% else %}
+FROM docker.io/library/caddy:{{ caddy_version }}
+{% endif %}

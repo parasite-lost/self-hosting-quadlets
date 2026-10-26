@@ -1,3 +1,12 @@
 ---
 caddy_user_name: "caddy"
 caddy_user_home: "/home/{{ caddy_user_name }}"
+
+# tag of the official caddy base images (caddy:<version>, caddy:<version>-builder)
+caddy_version: "2"
+# version of the plugin module, e.g. "v0.2.1" (empty: latest)
+caddy_dns_plugin_version: ""
+
+# systemd OnCalendar= of the image rebuild - should run before the
+# podman-auto-update.timer (daily at midnight) rolls out the new image
+caddy_image_rebuild_on_calendar: "Sun *-*-* 21:00"

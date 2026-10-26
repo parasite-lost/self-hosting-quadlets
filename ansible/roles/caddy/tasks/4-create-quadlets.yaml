@@ -2,8 +2,7 @@
 - name: Validate required variables are defined
   ansible.builtin.assert:
     that:
-      - caddy_container_image is defined
-      - caddy_dns_provider    is in _caddy_supported_dns_provider
+      - caddy_dns_provider is in _caddy_supported_dns_provider
     fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
     quiet: true
   tags:
@@ -40,6 +39,67 @@
         path: "{{ caddy_user_home }}/.config/containers/systemd"
         state: directory
         mode: u=rwx,g=rx,o=
+
+    - name: Create caddy image build directory
+      ansible.builtin.file:
+        path: "{{ caddy_dir_build }}"
+        state: directory
+        mode: u=rwx,g=rx,o=
+
+    - name: Create caddy Containerfile
+      ansible.builtin.template:
+        src: Containerfile.j2
+        dest: "{{ caddy_dir_build }}/Containerfile"
+        mode: u=rw,g=r,o=
+      notify:
+        - Build caddy image
+        - Schedule caddy restart
+
+    - name: Create caddy image build unit
+      ansible.builtin.template:
+        src: caddy.build.j2
+        dest: "{{ caddy_build }}"
+        mode: u=rw,g=r,o=
+      notify:
+        - Build caddy image
+        - Schedule caddy restart
+
+    - name: Check caddy image exists
+      ansible.builtin.command:
+        cmd: "podman image exists {{ caddy_image_name }}"
+      register: caddy_image_exists
+      changed_when: caddy_image_exists.rc == 1
+      failed_when: caddy_image_exists.rc not in [0, 1]
+      check_mode: false
+      notify:
+        - Build caddy image
+        - Schedule caddy restart
+
+    - name: Add image rebuild service
+      ansible.builtin.copy:
+        src: caddy-image-rebuild.service
+        dest: "{{ caddy_user_home }}/.config/systemd/user/caddy-image-rebuild.service"
+        mode: u=rw,g=r,o=
+
+    - name: Add image rebuild timer
+      ansible.builtin.template:
+        src: caddy-image-rebuild.timer.j2
+        dest: "{{ caddy_user_home }}/.config/systemd/user/{{ caddy_image_rebuild_timer_unit }}"
+        mode: u=rw,g=r,o=
+      notify:
+        - Restart caddy image rebuild timer
+
+    - name: Enable image rebuild and podman auto-update timers
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+        scope: user
+        daemon_reload: true
+      loop:
+        - "{{ caddy_image_rebuild_timer_unit }}"
+        - podman-auto-update.timer
+      when: not ansible_check_mode
 
     - name: Create (runtime) data volume
       ansible.builtin.copy:

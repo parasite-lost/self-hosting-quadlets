@@ -1,0 +1,11 @@
+[Unit]
+Description=Rebuild caddy image
+
+[Service]
+Type=oneshot
+# remove dangling images from previous builds (images in use are kept)
+ExecStartPre=podman image prune --force
+# caddy-build.service is a oneshot service with RemainAfterExit=yes - it has to
+# be restarted to rebuild. The running caddy container is not affected, the new
+# image is rolled out by podman-auto-update.timer (AutoUpdate=local).
+ExecStart=systemctl --user restart caddy-build.service

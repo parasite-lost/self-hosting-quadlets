@@ -10,6 +10,9 @@ _caddy_supported_dns_provider:
   - "localhost"
   - "cloudflare"
 
+# the caddy-dns plugin module, see https://github.com/caddy-dns (empty: plain caddy without plugin)
+caddy_dns_plugin_module: "{{ '' if caddy_dns_provider == 'localhost' else 'github.com/caddy-dns/' ~ caddy_dns_provider }}"
+
 # caddy restart can only happen after all roles have been executed since the
 # config depends on all roles. See "Schedule caddy restart" handler
 _caddy_restart_needed: false
@@ -20,6 +23,12 @@ caddy_container_unit: "caddy.container"
 caddy_container: "{{ caddy_user_home }}/.config/containers/systemd/{{ caddy_container_unit }}"
 caddy_container_d: "{{ caddy_container }}.d"
 caddy_port_mapping_dropin: "{{ caddy_container_d }}/port-mapping.conf"
+
+caddy_image_name: "localhost/caddy:latest"
+caddy_dir_build: "{{ caddy_user_home }}/build"
+caddy_build: "{{ caddy_user_home }}/.config/containers/systemd/caddy.build"
+caddy_build_service_unit: "caddy-build.service"
+caddy_image_rebuild_timer_unit: "caddy-image-rebuild.timer"
 
 # can be overridden with --extra-vars=caddy_refresh_credential=true
 caddy_refresh_credential: false
