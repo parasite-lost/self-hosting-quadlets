@@ -1,0 +1,9 @@
+[Unit]
+Description=Build caddy image (with dns provider plugin)
+
+[Build]
+ImageTag={{ caddy_image_name }}
+File={{ caddy_dir_build }}/Containerfile
+SetWorkingDirectory={{ caddy_dir_build }}
+# check for updated caddy base images on every build
+Pull=newer

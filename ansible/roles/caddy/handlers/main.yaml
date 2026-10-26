@@ -3,6 +3,26 @@
   ansible.builtin.set_fact:
     _caddy_restart_needed: true
 
+- name: Build caddy image
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  ansible.builtin.systemd_service:
+    service: "{{ caddy_build_service_unit }}"
+    state: restarted
+    scope: user
+    daemon_reload: true
+  when: not ansible_check_mode
+
+- name: Restart caddy image rebuild timer
+  become: true
+  become_user: "{{ caddy_user_name }}"
+  ansible.builtin.systemd_service:
+    service: "{{ caddy_image_rebuild_timer_unit }}"
+    state: restarted
+    scope: user
+    daemon_reload: true
+  when: not ansible_check_mode
+
 - name: Enable caddy
   become: true
   become_user: "{{ caddy_user_name }}"

@@ -1,0 +1,10 @@
+[Unit]
+Description=Rebuild caddy image regularly
+
+[Timer]
+OnCalendar={{ caddy_image_rebuild_on_calendar }}
+RandomizedDelaySec=30m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
