@@ -4,7 +4,6 @@
     that:
       - caddy_container_image is defined
       - caddy_dns_provider    is in _caddy_supported_dns_provider
-      - caddy_dns_provider != "cloudflare" or caddy_cloudflare_acme_api_token is defined
     fail_msg: "Required variable is not defined correctly for {{ inventory_hostname }}"
     quiet: true
   tags:
