@@ -88,11 +88,10 @@
         - Reload fail2ban
 
     - name: Enable fail2ban
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         service: fail2ban
         state: started
         enabled: true
-        daemon_reload: true
       when: not ansible_check_mode
 
     - name: Block cockpit
