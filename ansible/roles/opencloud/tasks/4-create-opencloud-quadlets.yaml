@@ -35,11 +35,3 @@
         mode: u=rw,g=r,o=
       notify:
         - Restart opencloud
-
-    - name: Enable opencloud
-      ansible.builtin.systemd_service:
-        unit: "opencloud-pod.service"
-        scope: user
-        enabled: true
-        daemon_reload: true
-      when: not ansible_check_mode

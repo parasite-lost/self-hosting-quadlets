@@ -23,16 +23,6 @@
     daemon_reload: true
   when: not ansible_check_mode
 
-- name: Enable caddy
-  become: true
-  become_user: "{{ caddy_user_name }}"
-  ansible.builtin.systemd_service:
-    unit: "{{ caddy_service_unit }}"
-    enabled: true
-    scope: user
-    daemon_reload: true
-  when: not ansible_check_mode
-
 - name: Reload caddy
   become: true
   become_user: "{{ caddy_user_name }}"

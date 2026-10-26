@@ -163,5 +163,4 @@
         dest: "{{ caddy_container }}"
         mode: u=rw,g=r,o=
       notify:
-        - Enable caddy
         - Schedule caddy restart
