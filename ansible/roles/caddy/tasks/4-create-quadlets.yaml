@@ -91,7 +91,7 @@
 
     - name: Enable image rebuild and podman auto-update timers
       ansible.builtin.systemd_service:
-        name: "{{ item }}"
+        service: "{{ item }}"
         enabled: true
         state: started
         scope: user
