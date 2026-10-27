@@ -11,7 +11,7 @@ Image=ghcr.io/immich-app/immich-machine-learning:{{ immich_version }}
 # better models since immich v3.3.0
 Environment=MACHINE_LEARNING_MODEL_REVISION=v2
 
-Volume=immich-model-cache.volume:/cache
+Volume=immich-model-cache.volume:/cache:nodev,nosuid,noexec
 
 [Service]
 Restart=always

@@ -11,9 +11,9 @@ Image=docker.io/valkey/valkey:9-alpine
 
 Exec=--port 0 --unixsocket /var/sockets/valkey.sock --unixsocketperm 770
 
-Volume=authelia-valkey-data.volume:/data
+Volume=authelia-valkey-data.volume:/data:nodev,nosuid,noexec
 # :z required as volume is shared
-Volume=authelia-internal-communication.volume:/var/sockets:z
+Volume=authelia-internal-communication.volume:/var/sockets:z,nodev,nosuid,noexec
 
 [Service]
 ExecStartPre=

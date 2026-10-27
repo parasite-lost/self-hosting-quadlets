@@ -89,5 +89,5 @@ Environment=STORAGE_USERS_DRIVER=posix
 Environment=STORAGE_USERS_POSIX_PERSONAL_SPACE_PATH_TEMPLATE={% raw %}"users/{{.User.Username|lower}}-{{.User.Id.OpaqueId}}"{% endraw %}
 
 # host mounts
-Volume={{ opencloud_dir_config_opencloud }}:/etc/opencloud:Z
-Volume={{ opencloud_dir_data_opencloud }}:/var/lib/opencloud:Z
+Volume={{ opencloud_dir_config_opencloud }}:/etc/opencloud:Z,nodev,nosuid,noexec
+Volume={{ opencloud_dir_data_opencloud }}:/var/lib/opencloud:Z,nodev,nosuid,noexec

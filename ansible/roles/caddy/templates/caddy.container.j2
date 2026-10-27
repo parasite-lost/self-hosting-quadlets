@@ -24,9 +24,9 @@ Exec=/usr/bin/caddy run --config /etc/caddy/Caddyfile
 
 NoNewPrivileges=true
 
-Volume={{ caddy_dir_config }}:/etc/caddy:ro,Z
-Volume=caddy-config.volume:/config
-Volume=caddy-data.volume:/data
+Volume={{ caddy_dir_config }}:/etc/caddy:ro,Z,nodev,nosuid,noexec
+Volume=caddy-config.volume:/config:nodev,nosuid,noexec
+Volume=caddy-data.volume:/data:nodev,nosuid,noexec
 {{ 'Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec' if _caddy_has_credentials }}
 
 [Install]

@@ -22,8 +22,8 @@ Exec=/usr/bin/caddy run --config /etc/caddy/Caddyfile
 NoNewPrivileges=true
 
 # no persistent data needed (/config, /data)
-Volume={{ static_website_dir_config }}:/etc/caddy:ro,Z
-Volume={{ static_website_dir_www }}:/www:ro,Z
+Volume={{ static_website_dir_config }}:/etc/caddy:ro,Z,nodev,nosuid,noexec
+Volume={{ static_website_dir_www }}:/www:ro,Z,nodev,nosuid,noexec
 
 [Install]
 WantedBy=default.target

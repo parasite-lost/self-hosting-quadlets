@@ -23,8 +23,8 @@ Environment=POSTGRES_DB=authelia
 Environment=POSTGRES_PASSWORD_FILE=/run/credentials/{{ _authelia_db_storage_password_name }}
 
 # :z required as volume is shared
-Volume=authelia-internal-communication.volume:/var/run/postgresql:z
-Volume=authelia-postgres-data.volume:/var/lib/postgresql
+Volume=authelia-internal-communication.volume:/var/run/postgresql:z,nodev,nosuid,noexec
+Volume=authelia-postgres-data.volume:/var/lib/postgresql:nodev,nosuid,noexec
 Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec
 
 [Service]

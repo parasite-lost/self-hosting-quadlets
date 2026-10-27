@@ -28,10 +28,10 @@ Environment=AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE=/run/credentials/{
 Environment=X_AUTHELIA_CONFIG_FILTERS=template
 
 # :z required as volume is shared
-Volume=authelia-internal-communication.volume:/var/sockets:z
-Volume=%h/config:/config:Z
-Volume=%h/assets:/config/assets:Z
-Volume=%h/email_templates:/config/email_templates:Z
+Volume=authelia-internal-communication.volume:/var/sockets:z,nodev,nosuid,noexec
+Volume=%h/config:/config:Z,nodev,nosuid,noexec
+Volume=%h/assets:/config/assets:ro,Z,nodev,nosuid,noexec
+Volume=%h/email_templates:/config/email_templates:ro,Z,nodev,nosuid,noexec
 Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec
 
 [Service]
