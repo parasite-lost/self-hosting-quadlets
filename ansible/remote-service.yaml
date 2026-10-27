@@ -1,0 +1,5 @@
+---
+- name: Setup remote service
+  hosts: production
+  roles:
+    - remote_service
