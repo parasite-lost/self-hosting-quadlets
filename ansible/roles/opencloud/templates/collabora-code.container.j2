@@ -13,6 +13,21 @@ ContainerName=collabora-code
 Image=docker.io/collabora/code:{{ opencloud_collabora_version }}
 #AutoUpdate=registry
 
+# document jails are created by coolforkit-ns in its own user/mount namespace
+# (full capabilities inside that namespace)
+NoNewPrivileges=true
+DropCapability=all
+# not used (coolwsd runs as non-root user, NoNewPrivileges prevents gaining file
+# capabilities), but coolforkit-caps carries the file capabilities
+# cap_chown,cap_fowner,cap_sys_chroot=ep: exec fails if they are not in the bounding set
+AddCapability=CHOWN FOWNER SYS_CHROOT
+
+ReadOnly=true
+# fontconfig cache in home of cool user (U=true: owned by container user)
+Mount=type=tmpfs,destination=/opt/cool/.cache,U=true
+# document jails, recreated on every start
+Mount=type=tmpfs,destination=/opt/cool/child-roots,U=true
+
 # TLS is handled by reverse proxy
 Environment=DONT_GEN_SSL_CERT=true
 # allow OpenCloud as wopi server

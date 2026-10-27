@@ -17,6 +17,12 @@ Image=docker.io/library/postgres:18
 # -c listen_addresses='' tells Postgres not to bind to any IP interface
 Exec=-c listen_addresses='' -c unix_socket_permissions=0770
 
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+# entrypoint runs as root: fixes ownership/mode of data and socket dirs, then gosu to postgres
+AddCapability=CHOWN DAC_OVERRIDE FOWNER SETUID SETGID
+
 Environment=TZ={{ host_time_zone }}
 Environment=POSTGRES_USER=authelia
 Environment=POSTGRES_DB=authelia

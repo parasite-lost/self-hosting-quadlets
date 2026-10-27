@@ -34,6 +34,8 @@ leak between services.
   this requires to ensure that multiple services do not reuse the same
   credential name (e.g. credential for database password in database container
   and application container).
+* containers and their volume mounts are hardened with various security settings
+  (no new privileges, dropping capabilities, read-only, etc.)
 
 ### Alternatives Considered
 

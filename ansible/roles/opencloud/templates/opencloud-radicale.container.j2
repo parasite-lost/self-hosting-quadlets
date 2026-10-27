@@ -16,5 +16,9 @@ Image=docker.io/opencloudeu/radicale:{{ opencloud_radicale_version }}
 # same as opencloud-server
 User=0
 
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+
 Volume={{ opencloud_dir_config_radicale }}/config:/etc/radicale/config:ro,Z,nodev,nosuid,noexec
 Volume={{ opencloud_dir_data_radicale }}:/var/lib/radicale:Z,nodev,nosuid,noexec

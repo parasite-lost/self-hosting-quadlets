@@ -18,6 +18,14 @@ Image=ghcr.io/authelia/authelia:4
 
 Exec=authelia --config /config/configuration.yml --config /config/config.d/
 
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+# access the unix socket of postgres (gid 999)
+GroupAdd=999
+# access the unix socket of valkey (gid 1000)
+GroupAdd=1000
+
 Environment=TZ={{ host_time_zone }}
 Environment=AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE=/run/credentials/{{ _authelia_jwt_secret_name }}
 Environment=AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE=/run/credentials/{{ _authelia_storage_encryption_key_name }}

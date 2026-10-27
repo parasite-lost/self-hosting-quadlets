@@ -11,6 +11,12 @@ Image=docker.io/valkey/valkey:9-alpine
 
 Exec=--port 0 --unixsocket /var/sockets/valkey.sock --unixsocketperm 770
 
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+# entrypoint runs as root: chown of /data, then drops privileges to valkey user
+AddCapability=CHOWN SETUID SETGID
+
 Volume=authelia-valkey-data.volume:/data:nodev,nosuid,noexec
 # :z required as volume is shared
 Volume=authelia-internal-communication.volume:/var/sockets:z,nodev,nosuid,noexec

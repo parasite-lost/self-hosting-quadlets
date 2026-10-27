@@ -12,6 +12,10 @@ Environment=MP_SMTP_AUTH_ALLOW_INSECURE=true
 Image=docker.io/axllent/mailpit:latest
 ContainerName=mailpit
 
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+
 [Service]
 Restart=always
 

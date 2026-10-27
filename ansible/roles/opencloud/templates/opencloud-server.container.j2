@@ -16,6 +16,10 @@ Image=docker.io/opencloudeu/opencloud-rolling:{{ opencloud_opencloud_version }}
 # same as opencloud-radicale
 User=0
 
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+
 Entrypoint=/bin/bash
 Exec=-c "if [ ! -f /etc/opencloud/opencloud.yaml ]; then opencloud init; fi; exec opencloud server"
 

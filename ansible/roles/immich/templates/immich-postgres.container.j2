@@ -9,6 +9,14 @@ ContainerName=immich-postgres
 Image=ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23
 ShmSize=128mb
 
+ReadOnly=true
+# entrypoint creates custom /etc/postgresql/postgresql.conf on every start (see immich-docker-entrypoint.sh)
+Tmpfs=/etc/postgresql
+NoNewPrivileges=true
+DropCapability=all
+# entrypoint runs as root: fixes ownership/mode of data and socket dirs, then gosu to postgres (see docker-entrypoint.sh)
+AddCapability=CHOWN DAC_OVERRIDE FOWNER SETUID SETGID
+
 Volume=immich-postgres-data:/var/lib/postgresql/data:nodev,nosuid,noexec
 Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec
 

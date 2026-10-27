@@ -8,6 +8,12 @@ Label=app=immich
 ContainerName=immich-machine-learning
 Image=ghcr.io/immich-app/immich-machine-learning:{{ immich_version }}
 
+ReadOnly=true
+# onnxruntime persists a telemetry device id, no need to keep it
+Tmpfs=/root/.cache
+NoNewPrivileges=true
+DropCapability=all
+
 # better models since immich v3.3.0
 Environment=MACHINE_LEARNING_MODEL_REVISION=v2
 

@@ -9,6 +9,10 @@ Label=app=immich
 ContainerName=immich-server
 Image=ghcr.io/immich-app/immich-server:{{ immich_version }}
 
+ReadOnly=true
+NoNewPrivileges=true
+DropCapability=all
+
 Volume={{ immich_upload_location }}:/data:Z,nodev,nosuid,noexec
 Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec
 
