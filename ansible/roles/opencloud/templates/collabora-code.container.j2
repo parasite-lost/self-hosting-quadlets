@@ -12,6 +12,8 @@ ContainerName=collabora-code
 
 Image=docker.io/collabora/code:{{ opencloud_collabora_version }}
 #AutoUpdate=registry
+# image defines a HEALTHCHECK (coolwsd --probe every 30s), not used
+HealthCmd=none
 
 # document jails are created by coolforkit-ns in its own user/mount namespace
 # (full capabilities inside that namespace)
