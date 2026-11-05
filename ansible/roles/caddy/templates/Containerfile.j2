@@ -6,6 +6,7 @@ RUN xcaddy build --with {{ caddy_dns_plugin_module }}{{ '@' ~ caddy_dns_plugin_v
 FROM docker.io/library/caddy:{{ caddy_version }}
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+RUN setcap cap_net_bind_service=+p /usr/bin/caddy
 {% else %}
 FROM docker.io/library/caddy:{{ caddy_version }}
 {% endif %}
