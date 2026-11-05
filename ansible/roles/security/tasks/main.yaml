@@ -25,6 +25,9 @@
       register: security_ssh_key_check
       failed_when: false
       changed_when: false
+      check_mode: false
+      tags:
+        - validate
 
     - name: Abort if key-based SSH login failed
       ansible.builtin.fail:
@@ -33,6 +36,10 @@
           {{ hostvars[inventory_hostname]['ansible_user'] }}@{{ hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname) }}.
           Password authentication was NOT disabled to prevent locking you out.
       when: security_ssh_key_check.rc != 0
+      changed_when: false
+      check_mode: false
+      tags:
+        - validate
 
     - name: Harden sshd
       when: security_ssh_key_check.rc == 0
