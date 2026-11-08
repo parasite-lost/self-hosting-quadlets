@@ -2,6 +2,7 @@
 Description=Volume (in-memory) for internal authelia communication
 
 [Volume]
+VolumeName=authelia-internal-communication
 Label=app=authelia
 Type=tmpfs
 Device=tmpfs

@@ -1,1 +1,3 @@
 [Volume]
+VolumeName=caddy-data
+Label=app=caddy

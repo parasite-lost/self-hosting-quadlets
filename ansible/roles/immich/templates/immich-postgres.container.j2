@@ -17,7 +17,7 @@ DropCapability=all
 # entrypoint runs as root: fixes ownership/mode of data and socket dirs, then gosu to postgres (see docker-entrypoint.sh)
 AddCapability=CHOWN DAC_OVERRIDE FOWNER SETUID SETGID
 
-Volume=immich-postgres-data:/var/lib/postgresql/data:nodev,nosuid,noexec
+Volume=immich-postgres-data.volume:/var/lib/postgresql/data:nodev,nosuid,noexec
 Volume=%d:/run/credentials:ro,Z,nodev,nosuid,noexec
 
 Environment=TZ={{ host_time_zone }}

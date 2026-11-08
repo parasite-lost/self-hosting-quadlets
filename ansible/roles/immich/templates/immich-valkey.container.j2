@@ -14,7 +14,7 @@ DropCapability=all
 # entrypoint runs as root: chown of /data, then drops privileges to valkey user
 AddCapability=CHOWN SETUID SETGID
 
-Volume=immich-valkey-data:/data:nodev,nosuid,noexec
+Volume=immich-valkey-data.volume:/data:nodev,nosuid,noexec
 
 [Service]
 Restart=always

@@ -2,4 +2,5 @@
 Description=Immich postgres data
 
 [Volume]
+VolumeName=immich-postgres-data
 Label=app=immich

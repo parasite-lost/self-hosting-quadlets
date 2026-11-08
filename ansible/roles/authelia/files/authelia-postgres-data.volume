@@ -2,4 +2,5 @@
 Description=Volume for authelia's postgres database
 
 [Volume]
+VolumeName=authelia-postgres-data
 Label=app=authelia

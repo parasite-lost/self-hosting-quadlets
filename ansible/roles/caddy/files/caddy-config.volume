@@ -1,1 +1,3 @@
 [Volume]
+VolumeName=caddy-config
+Label=app=caddy
