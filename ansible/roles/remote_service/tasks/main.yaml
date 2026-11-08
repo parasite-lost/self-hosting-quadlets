@@ -28,9 +28,24 @@
     key: "{{ remote_service_ssh_key }}"
     key_options: "{{ remote_service_key_options }}"
 
+- name: Allow sshd to bind the reverse tunnel port (SELinux)
+  ## list all ports modified
+  # semanage port -l -C
+  ## drop custom label on {{ remote_service_port }}
+  # semanage port -d -t ssh_port_t -p tcp {{ remote_service_port }}
+  become: true
+  community.general.seport:
+    ports: "{{ remote_service_port }}"
+    proto: tcp
+    setype: ssh_port_t
+    state: present
+
 - name: Restricted ssh
   become: true
   ansible.builtin.template:
     src: "90-remote_service.conf.j2"
     dest: "/etc/ssh/sshd_config.d/90-{{ remote_service_user_name }}.conf"
     mode: u=r,g=,o=
+    validate: /usr/sbin/sshd -t -f %s
+  notify:
+    - Reload sshd

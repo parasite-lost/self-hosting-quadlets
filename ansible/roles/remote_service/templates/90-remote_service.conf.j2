@@ -2,8 +2,9 @@ AllowUsers {{ remote_service_user_name }}
 Match User {{ remote_service_user_name }}
   PasswordAuthentication no
   X11Forwarding no
-  AllowTcpForwarding yes
-  PermitOpen localhost:{{ remote_service_port }}
+  AllowTcpForwarding remote
+  PermitListen localhost:{{ remote_service_port }}
+  PermitOpen none
   AllowAgentForwarding no
   PermitTunnel no
   ForceCommand echo 'do-not-send-commands'

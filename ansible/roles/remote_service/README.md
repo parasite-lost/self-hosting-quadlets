@@ -16,7 +16,7 @@ After=network.target
 ExecStart=/usr/bin/ssh -NT \
             -o ServerAliveInterval=60 \
             -o ExitOnForwardFailure=yes \
-            -R {{ remote_service_port }}:localhost:22 \
+            -R localhost:{{ remote_service_port }}:localhost:22 \
             {{ remote_service_user_name }}@{{ remote_service_subdomain }}.{{ host_maindomain }}
 RestartSec=5
 Restart=always
